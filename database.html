@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database – Security Monitor</title>
+  <link rel="stylesheet" href="database.css">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav" aria-label="Main">
+      <a href="cctv.html" class="nav-link">CCTV</a>
+      <a href="database.html" class="nav-link active" aria-current="page">Database</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <div class="database-layout">
+      <div class="filters">
+        <div class="filter-field">
+          <label for="filter-name">Name</label>
+          <input type="text" id="filter-name" placeholder="Filter by name" aria-label="Filter by name">
+        </div>
+        <div class="filter-field">
+          <label for="filter-place">Place</label>
+          <input type="text" id="filter-place" placeholder="Filter by place" aria-label="Filter by place">
+        </div>
+        <div class="filter-field">
+          <label for="filter-time">Time</label>
+          <input type="text" id="filter-time" placeholder="Filter by time" aria-label="Filter by time">
+        </div>
+        <div class="filter-field">
+          <label for="filter-species">Species</label>
+          <input type="text" id="filter-species" placeholder="Filter by species" aria-label="Filter by species">
+        </div>
+      </div>
+      <div class="code-reveal" id="code-reveal" hidden>
+        <p class="code-label">Code</p>
+        <p class="code-value" id="code-value"></p>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Place</th>
+              <th>Time</th>
+              <th>Species</th>
+              <th>Code</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="database.js"></script>
+</body>
+</html>
