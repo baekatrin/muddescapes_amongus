@@ -1,0 +1,198 @@
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0d0d0d;
+  color: #ccc;
+  min-height: 100vh;
+}
+
+/* Header & Nav */
+.header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+  background: #1a1a1a;
+}
+.nav {
+  display: flex;
+  gap: 0;
+}
+.nav-link {
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  border: 1px solid #333;
+  border-bottom: none;
+  color: #999;
+  text-decoration: none;
+  font-size: 1rem;
+  border-radius: 4px 4px 0 0;
+  margin-right: 2px;
+}
+.nav-link:hover {
+  color: #ccc;
+  background: #252525;
+}
+.nav-link.active {
+  background: #252525;
+  color: #0f0;
+  border-color: #0f0;
+}
+.nav-link:focus-visible {
+  outline: 2px solid #0f0;
+  outline-offset: 2px;
+}
+
+/* Main */
+.main {
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* CCTV Layout */
+.cctv-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.5rem;
+  align-items: start;
+}
+.video-column {
+  min-width: 0;
+}
+.video-wrapper {
+  position: relative;
+  background: #000;
+  border: 2px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  box-shadow: inset 0 0 60px rgba(0, 255, 0, 0.03);
+}
+.video-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+.cctv-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: sepia(0.1) hue-rotate(60deg) saturate(0.7);
+}
+.controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.control-group label,
+.knob-group label,
+.progress-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+.control-group select {
+  width: 100%;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #ccc;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+.control-group select:focus {
+  outline: 2px solid #0f0;
+  outline-offset: 1px;
+}
+
+/* Knobs */
+.knobs {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.knob {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  border: 3px solid #444;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+}
+.knob::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 4px;
+  height: 12px;
+  background: #0f0;
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(var(--knob-rotation, -80deg));
+  transform-origin: 50% 100%;
+}
+.knob:focus-visible {
+  outline: 2px solid #0f0;
+  outline-offset: 2px;
+}
+.knob:active {
+  cursor: grabbing;
+}
+
+/* Progress bar */
+.progress-section {
+  margin-top: 0.5rem;
+}
+.progress-bar {
+  display: flex;
+  gap: 4px;
+  height: 24px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-segment {
+  flex: 1;
+  background: #2a2a2a;
+  transition: background 0.2s;
+}
+.progress-segment.done {
+  background: #0f0;
+}
+.progress-hint {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .cctv-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .nav .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
