@@ -1,23 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Monitor</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, sans-serif; background: #0d0d0d; color: #ccc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; }
-    h1 { margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #0f0; }
-    .links { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-    .links a { display: block; padding: 0.75rem 1.5rem; background: #1a1a1a; border: 2px solid #0f0; color: #0f0; text-decoration: none; border-radius: 4px; font-weight: 500; }
-    .links a:hover { background: #252525; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CCTV Footage and Database</title>
+  <link rel="stylesheet" href="index.css" />
+  <script type="module" src="https://unpkg.com/input-knob"></script>
 </head>
+
 <body>
-  <h1>Security Monitor</h1>
   <nav class="links" aria-label="Sections">
-    <a href="cctv.html">CCTV</a>
+    <a href="index.html">CCTV</a>
     <a href="database.html">Database</a>
   </nav>
+
+  <hr>
+
+  <div class="cctv-container">
+    <div class="cctv-display">
+      <div class="cctv-cam">
+        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <button class="cctv-mute" onclick="toggleMute(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+            <path
+              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </svg>
+        </button>
+      </div>
+      <div class="cctv-cam">
+        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <button class="cctv-mute" onclick="toggleMute(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+            <path
+              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </svg>
+        </button>
+      </div>
+      <div class="cctv-cam">
+        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <button class="cctv-mute" onclick="toggleMute(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+            <path
+              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </svg>
+        </button>
+      </div>
+      <div class="cctv-cam">
+        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <button class="cctv-mute" onclick="toggleMute(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+            <path
+              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="knob-container">
+      <div class="knob" id="knob1">
+        <input-knob value="50" scale="10" min="0" max="100">
+          <div class="knob-inner"></div>
+        </input-knob>
+      </div>
+
+      <div class="knob" id="knob2">
+        <input-knob value="50" scale="10" min="0" max="100">
+          <div class="knob-inner"></div>
+        </input-knob>
+      </div>
+
+      <div class="knob" id="knob3">
+        <input-knob value="50" scale="10" min="0" max="100">
+          <div class="knob-inner"></div>
+        </input-knob>
+      </div>
+
+      <div class="knob" id="knob4">
+        <input-knob value="50" scale="10" min="0" max="100">
+          <div class="knob-inner"></div>
+        </input-knob>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
 </body>
+
 </html>
