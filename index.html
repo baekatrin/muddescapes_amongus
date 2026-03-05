@@ -21,7 +21,7 @@
     <div class="cctv-display">
       <div class="cctv-cam">
         <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <button class="cctv-mute" onclick="toggleMute(this)">
+        <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
             <path
@@ -31,7 +31,7 @@
       </div>
       <div class="cctv-cam">
         <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <button class="cctv-mute" onclick="toggleMute(this)">
+        <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
             <path
@@ -41,7 +41,7 @@
       </div>
       <div class="cctv-cam">
         <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <button class="cctv-mute" onclick="toggleMute(this)">
+        <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
             <path
@@ -51,7 +51,7 @@
       </div>
       <div class="cctv-cam">
         <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <button class="cctv-mute" onclick="toggleMute(this)">
+        <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
             <path
@@ -63,29 +63,46 @@
 
     <div class="knob-container">
       <div class="knob" id="knob1">
-        <input-knob value="50" scale="10" min="0" max="100">
+        <input-knob value="0" scale="100" min="0" max="100">
           <div class="knob-inner"></div>
         </input-knob>
+        <p class="show-value">0</p>
+        <div class="led">
+          <img id="led1" src="./data/led-off.png" width="50" height="45"></image>
+        </div>
       </div>
 
       <div class="knob" id="knob2">
-        <input-knob value="50" scale="10" min="0" max="100">
+        <input-knob value="0" scale="100" min="0" max="100">
           <div class="knob-inner"></div>
         </input-knob>
+        <div class="led">
+          <img id="led2" src="./data/led-off.png" width="50" height="45"></image>
+        </div>
       </div>
 
       <div class="knob" id="knob3">
-        <input-knob value="50" scale="10" min="0" max="100">
+        <input-knob value="0" scale="100" min="0" max="100">
           <div class="knob-inner"></div>
         </input-knob>
+        <div class="led">
+          <img id="led3" src="./data/led-off.png" width="50" height="45"></image>
+        </div>
       </div>
 
       <div class="knob" id="knob4">
-        <input-knob value="50" scale="10" min="0" max="100">
+        <input-knob value="0" scale="100" min="0" max="100">
           <div class="knob-inner"></div>
         </input-knob>
+        <div class="led">
+          <img id="led4" src="./data/led-off.png" width="50" height="45"></image>
+        </div>
       </div>
     </div>
+  </div>
+
+  <div class="checklist">
+    <p hidden id="knobs-success">Knobs are correct! Audio capabilities have been restored.</p>
   </div>
   <script src="index.js"></script>
 </body>

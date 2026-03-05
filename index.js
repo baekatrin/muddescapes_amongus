@@ -9,6 +9,11 @@ const UNMUTE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
   <path d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"/>
 </svg>`;
 
+const knob1 = document.querySelector('#knob1 input-knob');
+const knob2 = document.querySelector('#knob2 input-knob');
+const knob3 = document.querySelector('#knob3 input-knob');
+const knob4 = document.querySelector('#knob4 input-knob');
+
 function toggleMute(btn) {
     const allVideos = document.querySelectorAll('video');
     const allButtons = document.querySelectorAll('.cctv-mute')
@@ -26,3 +31,50 @@ function toggleMute(btn) {
         btn.innerHTML = MUTE_SVG;
     }
 }
+
+
+// Store your targets in an array to make checking easier
+const knobTargets = [
+  { id: 'knob1', min: 30, max: 33, led: '#led1' },
+  { id: 'knob2', min: 45, max: 48, led: '#led2' },
+  { id: 'knob3', min: 78, max: 81, led: '#led3' },
+  { id: 'knob4', min: 49, max: 52, led: '#led4' }
+];
+
+// Re-usable check function
+function checkAllKnobs() {
+  const allCorrect = knobTargets.every(target => {
+    const el = document.querySelector(`#${target.id} input-knob`);
+    return el.value > target.min && el.value < target.max;
+  });
+
+  if (allCorrect) {
+    const successMsg = document.getElementById('knobs-success');
+    successMsg.hidden = false; // Removes the 'hidden' attribute
+    successMsg.style.display = 'block';
+    
+    // Disable knobs and show mute buttons
+    document.querySelectorAll('input-knob').forEach(k => k.style.pointerEvents = 'none');
+    document.querySelectorAll('.cctv-mute').forEach(b => b.hidden = false);
+  }
+}
+
+// Set up listeners for all knobs at once
+knobTargets.forEach(target => {
+  const knobEl = document.querySelector(`#${target.id} input-knob`);
+  const ledEl = document.querySelector(target.led);
+  const displayEl = document.querySelector(`#${target.id} .show-value`);
+
+  knobEl.addEventListener('knob-move-change', (e) => {
+    const val = e.target.value;
+    if (displayEl) displayEl.textContent = val;
+
+    if (val > target.min && val < target.max) {
+      ledEl.src = "./data/led-on.png";
+    } else {
+      ledEl.src = "./data/led-off.png";
+    }
+    
+    checkAllKnobs(); // The "Master Check"
+  });
+});

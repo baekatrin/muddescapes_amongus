@@ -84,3 +84,11 @@ input-knob {
   border-radius: 50%;
   box-shadow: 0 0 8px #6A767F;
 }
+
+.led {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 16%;
+    height: auto;
+}
