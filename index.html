@@ -18,9 +18,15 @@
   <hr>
 
   <div class="cctv-container">
+    <div class="cctv-date-time">
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" name="footage-date" value="2050-01-01" min="2000-01-01" max="3000-01-01">
+      <label for="time">Select Time:</label>
+      <input type="time" id="time" name="footage-time">
+    </div>
     <div class="cctv-display">
       <div class="cctv-cam">
-        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <video id="vid1" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
         <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
@@ -30,7 +36,7 @@
         </button>
       </div>
       <div class="cctv-cam">
-        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <video id="vid2" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
         <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
@@ -40,7 +46,7 @@
         </button>
       </div>
       <div class="cctv-cam">
-        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <video id="vid3" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
         <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
@@ -50,7 +56,7 @@
         </button>
       </div>
       <div class="cctv-cam">
-        <video src="./videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+        <video id="vid4" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
         <button hidden class="cctv-mute" onclick="toggleMute(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
@@ -103,6 +109,7 @@
 
   <div class="checklist">
     <p hidden id="knobs-success">Knobs are correct! Audio capabilities have been restored.</p>
+    <p hidden id="date-time-success">Date and time are correct! Footage has been displayed.</p>
   </div>
   <script src="index.js"></script>
 </body>
