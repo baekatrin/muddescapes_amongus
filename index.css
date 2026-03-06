@@ -1,3 +1,32 @@
+body {
+    background-color: rgb(54, 61, 72);
+}
+
+nav {
+    background-color: rgb(0, 0, 0);
+}
+
+nav ul {
+    list-style-type: none;
+    overflow: hidden;
+}
+
+nav ul li {
+    float: left;
+
+}
+
+nav ul li a {
+    display: block;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: monospace;
+    background-color: gray;
+    color: white;
+    border: black;
+    border-width: 10px;
+}
+
 .cctv-container {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
@@ -5,7 +34,7 @@
     width: 100%;
     grid-template-areas:
     "cctv-date-time ."
-    "cctv-display knob-container"
+    "cctv-display knob-container";
 }
 
 .cctv-date-time {
@@ -18,25 +47,53 @@
     grid-template-columns: repeat(2, 1fr) !important;
     grid-template-rows: min-content min-content;
     gap: 10px 10px;
+    height: fit-content;
     background-color: black;
     max-width: 1200px;
     padding: 10px;
+    background-color: #282c2d;
+    border-style: ridge;
+    border-radius: 10px;
+    border-color: #546866;
+    border-width: 25px;
 }
+
 .cctv-display video {
     width: 100% !important;
     aspect-ratio: 16/9;
     height: auto;
     display: block;
-
+    filter: blur(15px) grayscale;
 }
+
 
 .cctv-cam {
     position: relative;
 }
 
+.cctv-cam p {
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+    z-index:20;
+    font-family: monospace;
+    font-size: 12px;
+    color: white;
+}
+
+.cctv-cam img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 12;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+}
+
 .cctv-mute {
     position: absolute;
-    top:10px;
+    top:15px;
     left:10px;
     z-index: 10;
 
