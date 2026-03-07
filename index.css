@@ -1,10 +1,38 @@
 body {
-    background-color: rgb(54, 61, 72);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: black; /* The main background color */
+    background-image:
+        /* Layer 1: Smallest, most frequent dots */
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(white 1px, transparent 1px),
+        /* Layer 2: Medium dots */
+        radial-gradient(rgba(255, 255, 255, .8) 2px, transparent 2px),
+        /* Layer 3: Largest, least frequent dots */
+        radial-gradient(rgba(255, 255, 255, .6) 3px, transparent 3px);
+    
+    /* Define the size of each gradient "tile" to control star density */
+    background-size: 
+        100px 100px, 
+        150px 150px, 
+        200px 200px, 
+        300px 300px, 
+        400px 400px;
+    
+    /* Randomize initial positions for a scattered look */
+    background-position: 
+        0 0, 
+        40px 60px, 
+        130px 270px, 
+        70px 100px,
+        250px 350px;
+    
+    /* Ensure content doesn't overflow and cause scrolling issues if desired */
+    overflow: hidden; 
 }
 
-nav {
-    background-color: rgb(0, 0, 0);
-}
 
 nav ul {
     list-style-type: none;
@@ -23,13 +51,12 @@ nav ul li a {
     font-family: monospace;
     background-color: gray;
     color: white;
-    border: black;
     border-width: 10px;
 }
 
 .cctv-container {
     display: grid !important;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 3.5fr 2fr;
     grid-template-rows: auto 1fr;
     width: 100%;
     grid-template-areas:
@@ -41,6 +68,10 @@ nav ul li a {
     grid-area: cctv-date-time;
 }
 
+.cctv-date-time label {
+    color: white;
+}
+
 .cctv-display {
     grid-area: cctv-display;
     display: grid !important;
@@ -48,14 +79,12 @@ nav ul li a {
     grid-template-rows: min-content min-content;
     gap: 10px 10px;
     height: fit-content;
-    background-color: black;
+
     max-width: 1200px;
     padding: 10px;
-    background-color: #282c2d;
-    border-style: ridge;
-    border-radius: 10px;
-    border-color: #546866;
-    border-width: 25px;
+    border: 50px solid transparent;
+    border-image: url("./data/cctv-border.png");
+    border-image-slice: 98;
 }
 
 .cctv-display video {
@@ -95,7 +124,7 @@ nav ul li a {
     position: absolute;
     top:15px;
     left:10px;
-    z-index: 10;
+    z-index: 50;
 
     background: rgba(0, 0, 0, 0.463);
     color: rgb(255, 255, 255);
@@ -108,13 +137,21 @@ nav ul li a {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    row-gap: 10px;
+}
+
+.knob {
+    background-image: url(./data/knob-bg.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 input-knob {
   display: block;
   width: 80px; 
   height: 80px;
-  margin: 20px auto;
+  margin: 40px auto;
   cursor: grab;
   /* This ensures the 'motor' and the 'wheel' are perfectly aligned */
   padding: 0;
@@ -152,8 +189,14 @@ input-knob {
 
 .led {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 16%;
-    height: auto;
+    margin: 30px 100px;
+}
+
+.led img {
+    width: 40px;
+    height: 35px;
+}
+
+.checklist {
+    color: white;
 }
