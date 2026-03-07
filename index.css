@@ -66,6 +66,10 @@ nav ul li a {
 
 .cctv-date-time {
     grid-area: cctv-date-time;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .cctv-date-time label {
