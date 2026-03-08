@@ -9,6 +9,10 @@ An immersive web-based escape room experience featuring multiple puzzle challeng
 - Python 3+ OR Node.js/npm
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
+### Run Online
+
+Just go to https://baekatrin.github.io/muddescapes_amongus/ !
+
 ### Run Locally
 
 This project must be served over HTTP (not file:// protocol). Choose one:
@@ -38,6 +42,8 @@ A 4-camera security monitor interface with dual objectives:
 - When both are correct, the video feed switches to secondary footage (`videoplayback2.mp4`)
 - A success message confirms: _"Date and time are correct! Footage has been displayed."_
 
+NOTE: Footage is dummy footage at the moment!
+
 #### Objective B: Analog Knob Calibration
 
 - Four manual control knobs must be adjusted to specific ranges:
@@ -56,34 +62,7 @@ A 4-camera security monitor interface with dual objectives:
 
 ---
 
-### 2. **Alternative CCTV Interface** (`cctv.html`, `cctv.js`, `cctv.css`)
-
-A single-camera security monitoring system with progressive task completion:
-
-#### Three Task Requirements
-
-1. **Select Correct Date/Time**: March 22, 2024 at 14:45
-2. **Adjust Analog Controls**:
-   - **Volume**: 40–80% (displayed as decimal 0.4–0.8)
-   - **Brightness**: 45–75
-   - Visual feedback via knob rotation and video filter adjustments
-3. **Complete Physical Puzzle**: Use URL parameter `?physical=UNLOCK` or hardware trigger
-
-#### Visual Feedback
-
-- **Progress Bar**: Shows "Signal quality" with 3 segments (one per task)
-- **Video Filters**: Footage is blurred (8px blur) until physical puzzle is unlocked
-- **Hint Text**: Updates dynamically based on remaining tasks
-- Final success message: _"Signal clear. Check the database for the code."_
-
-#### Persistent State
-
-- All settings stored in browser `localStorage` so progress is saved between sessions
-- Knob positions, date/time selection, and physical puzzle status all persist
-
----
-
-### 3. **Database Search** (`database.html`, `database.js`, `database.css`)
+### 2. **Database Search** (`database.html`, `database.js`, `database.css`)
 
 Investigative filtering to find the winning suspect record:
 
@@ -118,9 +97,6 @@ muddescapes_amongus/
 ├── index.html           # Main CCTV dashboard (4 cameras)
 ├── index.js             # Knob calibration & date/time logic
 ├── index.css            # Main CCTV styling
-├── cctv.html            # Alternative single-camera CCTV interface
-├── cctv.js              # Video filters, progress bar, state management
-├── cctv.css             # CCTV styling
 ├── database.html        # Suspect database interface
 ├── database.js          # Table filtering & code reveal logic
 ├── database.css         # Database styling
@@ -176,7 +152,6 @@ python generate_data.py
   <video id="vid1" src="./data/videoplayback.mp4" ...></video>
   <video id="vid2" src="./data/videoplayback2.mp4" ...></video>
   ```
-- **Alternative CCTV** (`cctv.html`): Uses `#cctv-video` element with `assets/placeholder.mp4`
 
 ### Adjust Knob Targets
 
@@ -191,15 +166,6 @@ const knobTargets = [
 ];
 ```
 
-**Alternative CCTV** (`cctv.js`):
-
-```javascript
-const KNOB_VOLUME_GOAL_MIN = 0.4;
-const KNOB_VOLUME_GOAL_MAX = 0.8;
-const KNOB_BRIGHTNESS_GOAL_MIN = 45;
-const KNOB_BRIGHTNESS_GOAL_MAX = 75;
-```
-
 ### Change Correct Date/Time
 
 **Main CCTV** (`index.js`):
@@ -211,12 +177,6 @@ if (date.value == "2083-01-01") {
 if (time.value == "10:00") {
   isTime = true;
 }
-```
-
-**Alternative CCTV** (`cctv.js`):
-
-```javascript
-const CORRECT_DATETIME = "correct"; // Matches <option value="correct">Mar 22, 2024 14:45</option>
 ```
 
 ---
@@ -255,14 +215,6 @@ const CORRECT_DATETIME = "correct"; // Matches <option value="correct">Mar 22, 2
    - Knob 2 → 45–48
    - Knob 3 → 78–81
    - Knob 4 → 49–52
-
-### Alternative CCTV (`cctv.html`)
-
-1. Set **Date**: Mar 22, 2024
-2. Set **Time**: 14:45
-3. Adjust **Volume** to 40–80%
-4. Adjust **Brightness** to 45–75
-5. (Optional) Add `?physical=UNLOCK` to URL to complete physical puzzle task
 
 ### Database (`database.html`)
 
