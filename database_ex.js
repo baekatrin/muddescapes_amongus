@@ -32,65 +32,18 @@
     dom.codeValue = document.getElementById('code-value');
   }
 
-  var CSV_URL = 'MuddEscapes Amongus Data - Sheet1.csv';
-
-  function parseCsv(text) {
-    var lines = text.trim().split(/\r?\n/);
-    if (lines.length < 2) return [];
-    var header = lines[0].split(',').map(function (h) { return h.trim().toLowerCase(); });
-    var iName = header.indexOf('name');
-    var iPlace = header.indexOf('place');
-    var iTime = header.indexOf('time');
-    var iSpecies = header.indexOf('species');
-    var iCode = header.indexOf('code');
-    if (iName < 0 || iPlace < 0 || iTime < 0 || iSpecies < 0 || iCode < 0) return [];
-    var rows = [];
-    for (var i = 1; i < lines.length; i++) {
-      var line = lines[i];
-      if (!line.trim()) continue;
-      var parts = line.split(',');
-      if (parts.length < 5) continue;
-      var codeVal = parts.slice(iCode).join(',').trim();
-      rows.push({
-        name: (parts[iName] || '').trim(),
-        place: (parts[iPlace] || '').trim(),
-        time: (parts[iTime] || '').trim(),
-        species: (parts[iSpecies] || '').trim(),
-        code: codeVal
-      });
-    }
-    return rows;
-  }
-
-  function applyEntries(data) {
-    state.entries = data;
-    state.filteredEntries = state.entries.slice();
-    renderTable();
-  }
-
   function fetchEntries() {
-    fetch(encodeURI(CSV_URL))
-      .then(function (r) {
-        if (!r.ok) throw new Error('csv');
-        return r.text();
-      })
-      .then(function (text) {
-        var parsed = parseCsv(text);
-        if (!parsed.length) throw new Error('empty');
-        applyEntries(parsed);
+    fetch('data/entries.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        state.entries = Array.isArray(data) ? data : (data.entries || []);
+        state.filteredEntries = state.entries.slice();
+        renderTable();
       })
       .catch(function () {
-        fetch('data/entries.json')
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            var list = Array.isArray(data) ? data : (data.entries || []);
-            applyEntries(list);
-          })
-          .catch(function () {
-            state.entries = [];
-            state.filteredEntries = [];
-            renderTable();
-          });
+        state.entries = [];
+        state.filteredEntries = [];
+        renderTable();
       });
   }
 
