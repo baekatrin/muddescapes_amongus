@@ -13,7 +13,8 @@
     filterSpecies: null,
     tableBody: null,
     codeReveal: null,
-    codeValue: null
+    codeValue: null,
+    rowCount: null
   };
 
   function init() {
@@ -30,11 +31,13 @@
     dom.tableBody = document.getElementById('table-body');
     dom.codeReveal = document.getElementById('code-reveal');
     dom.codeValue = document.getElementById('code-value');
+    dom.rowCount = document.getElementById('row-count');
   }
 
   var CSV_URL = 'MuddEscapes Amongus Data - Sheet1.csv';
 
   function parseCsv(text) {
+    text = text.replace(/^\uFEFF/, '');
     var lines = text.trim().split(/\r?\n/);
     if (lines.length < 2) return [];
     var header = lines[0].split(',').map(function (h) { return h.trim().toLowerCase(); });
@@ -68,6 +71,16 @@
     renderTable();
   }
 
+  function tryEmbeddedRecords() {
+    if (typeof window.__DB_RECORDS__ !== 'undefined' &&
+        Array.isArray(window.__DB_RECORDS__) &&
+        window.__DB_RECORDS__.length > 0) {
+      applyEntries(window.__DB_RECORDS__.slice());
+      return true;
+    }
+    return false;
+  }
+
   function fetchEntries() {
     fetch(encodeURI(CSV_URL))
       .then(function (r) {
@@ -80,16 +93,28 @@
         applyEntries(parsed);
       })
       .catch(function () {
+        if (tryEmbeddedRecords()) return;
         fetch('data/entries.json')
-          .then(function (r) { return r.json(); })
+          .then(function (r) {
+            if (!r.ok) throw new Error('json');
+            return r.json();
+          })
           .then(function (data) {
             var list = Array.isArray(data) ? data : (data.entries || []);
-            applyEntries(list);
+            if (list.length) {
+              applyEntries(list);
+            } else if (!tryEmbeddedRecords()) {
+              state.entries = [];
+              state.filteredEntries = [];
+              renderTable();
+            }
           })
           .catch(function () {
-            state.entries = [];
-            state.filteredEntries = [];
-            renderTable();
+            if (!tryEmbeddedRecords()) {
+              state.entries = [];
+              state.filteredEntries = [];
+              renderTable();
+            }
           });
       });
   }
@@ -147,6 +172,14 @@
         dom.codeReveal.hidden = true;
         dom.codeValue.textContent = '';
       }
+    }
+
+    if (dom.rowCount) {
+      var n = rows.length;
+      var total = state.entries.length;
+      dom.rowCount.textContent = n === total
+        ? 'Showing all ' + n + ' rows.'
+        : 'Showing ' + n + ' of ' + total + ' rows (filters applied).';
     }
   }
 
