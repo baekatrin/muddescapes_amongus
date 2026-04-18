@@ -74,6 +74,15 @@ function publishValue(topic, value) {
   }
 }
 
+// Expose solved state globally for web interface
+let globalSolvedState = false;
+function setSolvedState(state) {
+  globalSolvedState = state;
+  if (state) {
+    console.log("[ARDUINO] Puzzle SOLVED!");
+  }
+}
+
 // Connect to Serial Port
 function connectSerial() {
   serialPort = new SerialPort.SerialPort({
@@ -105,6 +114,7 @@ function connectSerial() {
 }
 
 function parseArduinoData(line) {
+    console.log('[SERIAL] Raw data:', line);
   // Expected format: A1:1234 A2:2345 sumA:3579 dac1:128 | B1:2047 B2:2000 dac2:64 | bar1_solved:YES bar2_solved:YES
 
   // Extract DAC values (0-255) and convert to percentages (0-100)
@@ -130,6 +140,7 @@ function parseArduinoData(line) {
     const bar1Solved = bar1SolvedMatch[1] === "YES";
     const bar2Solved = bar2SolvedMatch[1] === "YES";
     const overallSolved = bar1Solved && bar2Solved;
+    setSolvedState(overallSolved);
     publishValue(MQTT_TOPICS.solved, overallSolved ? "true" : "false");
   }
 }
