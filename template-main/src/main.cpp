@@ -97,7 +97,8 @@ const uint8_t BAR1_SOLVED_THRESHOLD = 245;
 unsigned long lastPublishTime = 0;
 const unsigned long PUBLISH_INTERVAL = 100;  // Publish every 100ms
 
-// --- MuddEscapes ---
+// --- MuddEscapes (control center + web signal monitor read these MQTT topics) ---
+// Data topic prefix: muddescapes/data/<puzzle name>/  — see mqtt-bridge.js (PUZZLE_NAME, VAR_SOLVED_LABEL).
 MuddEscapes &me = MuddEscapes::getInstance();
 
 muddescapes_callback callbacks[]{

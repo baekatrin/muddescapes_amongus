@@ -17,8 +17,33 @@
     rowCount: null
   };
 
+  var STORAGE_PREFIX = 'me_db_filter_';
+
+  function persistFilters() {
+    try {
+      if (dom.filterName) sessionStorage.setItem(STORAGE_PREFIX + 'name', dom.filterName.value);
+      if (dom.filterPlace) sessionStorage.setItem(STORAGE_PREFIX + 'place', dom.filterPlace.value);
+      if (dom.filterTime) sessionStorage.setItem(STORAGE_PREFIX + 'time', dom.filterTime.value);
+      if (dom.filterSpecies) sessionStorage.setItem(STORAGE_PREFIX + 'species', dom.filterSpecies.value);
+    } catch (e) { /* private mode / quota */ }
+  }
+
+  function restoreFilters() {
+    try {
+      var n = sessionStorage.getItem(STORAGE_PREFIX + 'name');
+      var p = sessionStorage.getItem(STORAGE_PREFIX + 'place');
+      var t = sessionStorage.getItem(STORAGE_PREFIX + 'time');
+      var s = sessionStorage.getItem(STORAGE_PREFIX + 'species');
+      if (n !== null && dom.filterName) dom.filterName.value = n;
+      if (p !== null && dom.filterPlace) dom.filterPlace.value = p;
+      if (t !== null && dom.filterTime) dom.filterTime.value = t;
+      if (s !== null && dom.filterSpecies) dom.filterSpecies.value = s;
+    } catch (e) { /* */ }
+  }
+
   function init() {
     cacheDoms();
+    restoreFilters();
     fetchEntries();
     bindFilters();
   }
@@ -67,8 +92,7 @@
 
   function applyEntries(data) {
     state.entries = data;
-    state.filteredEntries = state.entries.slice();
-    renderTable();
+    filterAndRender();
   }
 
   function tryEmbeddedRecords() {
@@ -144,6 +168,7 @@
              (!t || (row.time || '').toLowerCase().includes(t)) &&
              (!s || (row.species || '').toLowerCase().includes(s));
     });
+    persistFilters();
     renderTable();
   }
 

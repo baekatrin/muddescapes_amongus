@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="nav.css" />
   <script type="module" src="https://unpkg.com/input-knob"></script>
-  <!-- MQTT.js WebSocket Client -->
+  <!-- MQTT: browser uses WSS; ESP uses libmuddescapes (mqtt://). Same broker. -->
+  <!-- Puzzle name + variable label must match template-main/src/main.cpp and mqtt-bridge.js -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 
@@ -310,7 +311,7 @@
     <div class="sm-status">
       <span class="sm-dot connecting" id="sm-dot"></span>
       <span id="sm-conn-label" style="color:#ba7517;">connecting to uplink...</span>
-      <span style="margin-left:auto;color:#1a2d4a;font-size:10px;">victor/#</span>
+      <span style="margin-left:auto;color:#1a2d4a;font-size:10px;">muddescapes/#</span>
     </div>
     <div class="sm-grid">
       <div class="sm-panel">

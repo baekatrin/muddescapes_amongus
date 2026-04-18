@@ -1,12 +1,17 @@
-// Signal Monitor MQTT Connection and Bar Rendering
+// Signal Monitor MQTT — wired to libmuddescapes (same broker + topic layout as ESP32).
+// Library publishes: muddescapes/data/<PUZZLE_NAME>/<variable label> → "1" or "0" for bools.
+// Bar topics are extra telemetry (serial bridge or custom publisher); not from libmuddescapes.
 (function () {
 
+  var PUZZLE_NAME = 'AmongUs';
+  var VAR_SOLVED_LABEL = "Current state of AmongUs's puzzle";
+
   const CONFIG = {
-    broker:        'wss://broker.hivemq.com:8884/mqtt',
-    clientId:      'signal-monitor-' + Math.random().toString(16).slice(2, 8),
-    topicBar1:     'victor/bar1',
-    topicBar2:     'victor/bar2',
-    topicSolved:   'victor/solved',
+    broker: 'wss://broker.hivemq.com:8884/mqtt',
+    topicBar1: 'muddescapes/data/' + PUZZLE_NAME + '/bar1',
+    topicBar2: 'muddescapes/data/' + PUZZLE_NAME + '/bar2',
+    topicSolved: 'muddescapes/data/' + PUZZLE_NAME + '/' + VAR_SOLVED_LABEL,
+    clientId: 'signal-monitor-' + Math.random().toString(16).slice(2, 8),
     segments:      10,
     bar1LitColor:  '#185fa5',   // coherence lit segment
     bar1DimColor:  '#0d1e33',   // coherence unlit segment
@@ -124,7 +129,7 @@
     } else if (topic === CONFIG.topicBar2) {
       render(bar1Val, parseInt(val, 10));
     } else if (topic === CONFIG.topicSolved) {
-      setSolved(val === 'true');
+      setSolved(val === '1' || val.toLowerCase() === 'true');
     }
   });
 
