@@ -1,0 +1,93 @@
+[33mcommit c8ad0eec64751dd0300c912ef890940b02db5b01[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Sun Mar 8 16:11:13 2026 -0700
+
+    Update README.md again
+
+[33mcommit 408e9dd9a29de88f0819e77f58318d8440810920[m
+Merge: ff7f75d 0d50a7a
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Sun Mar 8 16:07:31 2026 -0700
+
+    Merge branch 'main' of https://github.com/baekatrin/muddescapes_amongus
+
+[33mcommit ff7f75d367c0f1b65ed84f709a34d76345325283[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Sun Mar 8 16:04:54 2026 -0700
+
+    Updated README.md
+
+[33mcommit 0d50a7ab9719aad4e71c8d064f8ed55eb6d9ae91[m
+Author: Arushi Bhandari <140417783+baekatrin@users.noreply.github.com>
+Date:   Sat Mar 7 14:02:59 2026 -0800
+
+    Delete CNAME
+
+[33mcommit 84e264110519c7ecfeb9c517067922b9e54dd601[m
+Author: Arushi Bhandari <140417783+baekatrin@users.noreply.github.com>
+Date:   Sat Mar 7 14:00:29 2026 -0800
+
+    Create CNAME
+
+[33mcommit 86e8736403d492cb12ae7b8706afc7fdd0222ded[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Fri Mar 6 23:11:42 2026 -0800
+
+    Fixed date-time div to not stack
+
+[33mcommit 5ab9ea945d800fb03a2875e03d9408c132d4e3a3[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Fri Mar 6 23:04:43 2026 -0800
+
+    MORE CSS
+
+[33mcommit 17980eb67b423907fa11202a8aefd6808ef27662[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Fri Mar 6 15:06:03 2026 -0800
+
+    CSS Added - Incomplete
+
+[33mcommit 04b26807eb6d1ca5475066a9ab8359ea014d10aa[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Thu Mar 5 16:02:22 2026 -0800
+
+    Added date/time step
+
+[33mcommit 92ddc57c59339d6aa430f1e70bf302e33bbe53fa[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Thu Mar 5 15:08:02 2026 -0800
+
+    Knobs work and enable audio controls
+
+[33mcommit c82947cdd4e28f7c6c09988a91337914c0978186[m
+Author: Arushi Bhandari <140417783+baekatrin@users.noreply.github.com>
+Date:   Tue Mar 3 15:42:16 2026 -0800
+
+    Added CCTV grid w/mute and knobs (not functional)
+
+[33mcommit f6b8c2bc532ef8c4d1387a846016a0a2dd172a69[m
+Author: victor-nguyen4 <vicnguyen@g.hmc.edu>
+Date:   Sat Feb 28 02:19:17 2026 -0800
+
+    Implement analog LED puzzle functionality
+
+[33mcommit e86c35dbe2dc0d44a1abaf554dc58f4cbe1f276d[m
+Merge: 35618b4 34a7394
+Author: Arushi Bhandari <140417783+baekatrin@users.noreply.github.com>
+Date:   Tue Feb 17 21:35:57 2026 -0800
+
+    Merge pull request #1 from baekatrin/main
+    
+    Base
+
+[33mcommit 34a7394856695fa5b10f25390319ee08e9aca59e[m
+Author: Arushi Bhandari <arushibhandari123@gmail.com>
+Date:   Tue Feb 17 21:35:05 2026 -0800
+
+    Base
+
+[33mcommit 35618b4f0705bea7ef87d0fde491b7ccc9846a61[m
+Author: 안서정 <ahnseojeong@anseojeong-ui-MacBookPro-540.local>
+Date:   Sat Feb 14 14:07:34 2026 -0800
+
+    first commit
