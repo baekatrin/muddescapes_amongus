@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <muddescapes.h>
+#include <PubSubClient.h>
 
 // =============================================================================
 // PUZZLE: "Signal Quality" – Video Feed Calibration
@@ -92,6 +93,10 @@ const int POT_TOLERANCE_B = 150;                       // ±150 counts (~3.7%)
 // --- Bar 1 DAC threshold to count as solved (accounts for ADC noise) ---
 const uint8_t BAR1_SOLVED_THRESHOLD = 245;
 
+// --- MQTT Publishing (send sensor values to web in real-time) ---
+unsigned long lastPublishTime = 0;
+const unsigned long PUBLISH_INTERVAL = 100;  // Publish every 100ms
+
 // --- MuddEscapes ---
 MuddEscapes &me = MuddEscapes::getInstance();
 
@@ -132,7 +137,33 @@ uint8_t computeBar1Dac(int sumA) {
 // Both on-target → DAC 0 (bar dark). Either off-target → bar lights up.
 uint8_t computeBar2Dac(int b1, int b2) {
   int dev1 = abs(b1 - TARGET_POT_B);
-  int dev2 = abs(b2 - TARGET_POT_B);
+ 
+
+// Publish sensor values to MQTT topics for web interface consumption
+void publishSensorValues(int a1, int a2, int b1, int b2, uint8_t dac1, uint8_t dac2, bool bar1_solved, bool bar2_solved) {
+  // Access the PubSubClient from MuddEscapes
+  PubSubClient* client = me.getClient();
+  
+  if (client && client->connected()) {
+    // Convert DAC values (0-255) to percentages (0-100) for web display
+    uint8_t bar1_pct = map(dac1, 0, 255, 0, 100);
+    uint8_t bar2_pct = map(dac2, 0, 255, 0, 100);
+    
+    // Publish display percentages (web component expects 0-100)
+    client->publish("victor/bar1", String(bar1_pct).c_str());
+    client->publish("victor/bar2", String(bar2_pct).c_str());
+    
+    // Publish overall solved state (both bars solved simultaneously)
+    bool overall_solved = bar1_solved && bar2_solved;
+    client->publish("victor/solved", overall_solved ? "true" : "false");
+    
+    // Also publish raw sensor values for debugging/advanced features
+    client->publish("Victor/sensors/A1", String(a1).c_str());
+    client->publish("Victor/sensors/A2", String(a2).c_str());
+    client->publish("Victor/sensors/B1", String(b1).c_str());
+    client->publish("Victor/sensors/B2", String(b2).c_str());
+  }
+} int dev2 = abs(b2 - TARGET_POT_B);
   int avgDev = (dev1 + dev2) / 2;
   int dac = map(avgDev, 0, MAX_ADC / 2, 0, 255);
   return (uint8_t)constrain(dac, 0, 255);
@@ -187,7 +218,14 @@ void setup() {
 // LOOP
 // =============================================================================
 
-void loop() {
+void loop()Publish to MQTT at regular intervals ---
+    unsigned long now = millis();
+    if (now - lastPublishTime >= PUBLISH_INTERVAL) {
+      publishSensorValues(a1, a2, b1, b2, dac1, dac2, bar1_solved, bar2_solved);
+      lastPublishTime = now;
+    }
+
+    // ---  {
   if (!solved_puzzle) {
     // --- Read all four potentiometers ---
     int a1 = smoothAnalogRead(POT_A1_PIN);
