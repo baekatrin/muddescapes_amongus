@@ -7,86 +7,109 @@ body {
     margin: 0;
     padding: 0;
     height: auto;
-    background-color: black; /* The main background color */
+    background-color: black;
     background-image:
-        /* Layer 1: Smallest, most frequent dots */
         radial-gradient(white 1px, transparent 1px),
         radial-gradient(white 1px, transparent 1px),
         radial-gradient(white 1px, transparent 1px),
-        /* Layer 2: Medium dots */
         radial-gradient(rgba(255, 255, 255, .8) 2px, transparent 2px),
-        /* Layer 3: Largest, least frequent dots */
         radial-gradient(rgba(255, 255, 255, .6) 3px, transparent 3px);
-    
-    /* Define the size of each gradient "tile" to control star density */
-    background-size: 
-        100px 100px, 
-        150px 150px, 
-        200px 200px, 
-        300px 300px, 
-        400px 400px;
-    
-    /* Randomize initial positions for a scattered look */
-    background-position: 
-        0 0, 
-        40px 60px, 
-        130px 270px, 
-        70px 100px,
-        250px 350px;
+    background-size: 100px 100px, 150px 150px, 200px 200px, 300px 300px, 400px 400px;
+    background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 250px 350px;
 }
 
-.cctv-container {
-    display: block;
+/* ===== MAIN 2x2 GRID LAYOUT ===== */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    padding: 8px;
     width: 100%;
+    height: calc(100vh - 60px);
+    box-sizing: border-box;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #333;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 8px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.item-header {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    margin-bottom: 4px;
+    font-weight: bold;
+    border-bottom: 1px solid #0f0;
+    padding-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .cctv-date-time {
     display: flex;
-    gap: 15px;
+    gap: 3px;
     align-items: center;
     flex-wrap: wrap;
-    padding: 15px;
+    padding: 3px;
+    margin-bottom: 4px;
+    font-size: 8px;
 }
 
 .cctv-date-time label {
+    color: #999;
+    font-weight: bold;
+}
+
+.cctv-date-time input {
+    padding: 2px 3px;
+    font-size: 8px;
+    background: #1a1a1a;
+    border: 1px solid #444;
     color: white;
 }
 
 .cctv-display {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    grid-template-rows: min-content min-content;
-    gap: 10px 10px;
-    max-width: 1200px;
-    width: 100%;
-    padding: 10px;
-    border: 50px solid transparent;
-    border-image: url("./data/cctv-border.png");
-    border-image-slice: 98;
-    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
 }
 
 .cctv-display video {
     width: 100% !important;
-    aspect-ratio: 16/9;
-    height: auto;
+    height: 100%;
     display: block;
     filter: blur(15px) grayscale;
+    object-fit: cover;
 }
 
 
 .cctv-cam {
     position: relative;
+    overflow: hidden;
 }
 
-.cctv-cam p {
+.cctv-label {
     position: absolute;
-    left: 10px;
-    bottom: 0px;
-    z-index:20;
+    left: 8px;
+    bottom: 2px;
+    z-index: 20;
     font-family: monospace;
-    font-size: 12px;
+    font-size: 10px;
     color: white;
+    margin: 0;
 }
 
 .cctv-cam img {
@@ -101,84 +124,449 @@ body {
 
 .cctv-mute {
     position: absolute;
-    top:15px;
-    left:10px;
+    top: 4px;
+    left: 4px;
     z-index: 50;
-
-    background: rgba(0, 0, 0, 0.463);
+    background: rgba(0, 0, 0, 0.7);
     color: rgb(255, 255, 255);
     cursor: pointer;
-    border: none;    
+    border: 1px solid #444;
+    border-radius: 2px;
+    padding: 2px 3px;
+    font-size: 7px;
+}
+
+/* Glitch and Static Room Overlays */
+.cctv-glitch-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16/9;
+    z-index: 15;
+    pointer-events: none;
+    animation: glitch-flicker 0.15s infinite;
+}
+
+.cctv-static-room {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16/9;
+    z-index: 14;
+    pointer-events: none;
+    object-fit: cover;
+}
+
+.cctv-room-caption {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    z-index: 16;
+    font-family: 'Courier New', monospace;
+    font-size: 7px;
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+@keyframes glitch-flicker {
+    0%, 100% { opacity: 1; }
+    5%, 15% { opacity: 0.7; }
+    10% { opacity: 0.9; }
+}
+
+.cctv-label {
+    position: absolute;
+    left: 2px;
+    bottom: 0px;
+    z-index: 20;
+    font-family: monospace;
+    font-size: 7px;
+    color: white;
+    margin: 0;
+}
+
+.cctv-rec-overlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 12;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
 }
 
 .knob-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    row-gap: 10px;
-    column-gap: 10px;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
+    row-gap: 12px;
+    column-gap: 12px;
+    justify-items: center;
+    flex: 1;
+    align-content: start;
 }
 
-.knob {
-    background-image: url(./data/knob-bg.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+.knob-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 85px;
 }
 
 input-knob {
-  display: block;
-  width: 80px; 
-  height: 80px;
-  margin: 40px auto;
-  cursor: grab;
-  /* This ensures the 'motor' and the 'wheel' are perfectly aligned */
-  padding: 0;
-  border: none;
+    width: 75px;
+    height: 75px;
+    padding: 0;
+    border: none;
+}
+
+input-knob::part(rotator) {
+    box-sizing: border-box;
+    background: #1a1a1a;
+    border: 2px solid #0f0;
+    border-radius: 100%;
+    width: 75px;
+    height: 75px;
+}
+
+.knob-marker {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font: bold 16px monospace;
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    user-select: none;
+}
+
+.knob-value-display {
+    font: bold 12px monospace;
+    color: #0f0;
+    text-shadow: 0 0 8px #0f0;
+    min-width: 30px;
+    text-align: center;
 }
 
 .knob-inner {
-  width: 100%;
-  height: 100%;
-  background: #222; 
-  border-radius: 50%;
-  border: 4px solid #444;
-  position: relative;
-  /* This prevents the "flat tire" wobble */
-  box-sizing: border-box; 
+    width: 100%;
+    height: 100%;
+    background: #222;
+    border-radius: 50%;
+    border: 4px solid #444;
+    position: relative;
+    box-sizing: border-box;
 }
 
-/* The Green Dot Pointer */
 .knob-inner::after {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  /* This line is the secret sauce: 
-     It moves the dot back by half its own width 
-     so it is PERFECTLY centered */
-  transform: translateX(-50%); 
-  
-  width: 8px;
-  height: 8px;
-  background-color: #6A767F; 
-  border-radius: 50%;
-  box-shadow: 0 0 8px #6A767F;
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: #6A767F;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #6A767F;
+}
+
+.knob-label {
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #0f0;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0;
 }
 
 .led {
-    display: block;
-    margin: 30px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
 }
 
 .led img {
-    width: 40px;
-    height: 35px;
+    width: 22px;
+    height: 18px;
+    object-fit: contain;
 }
 
 .checklist {
     color: white;
+}
+
+/* Progress Terminal */
+.progress-terminal {
+    max-width: 100%;
+    padding: 6px;
+    background: #000;
+    border: 1px solid #0f0;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+    text-shadow: 0 0 10px #0f0;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    font-size: 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.term-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #0f0;
+    padding-bottom: 2px;
+    text-transform: uppercase;
+    font-size: 7px;
+}
+
+.term-lines {
+    margin-bottom: 4px;
+    flex: 1;
+}
+
+.term-line {
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 7px;
+    white-space: nowrap;
+}
+
+.term-bracket {
+    color: #0f0;
+    font-weight: bold;
+}
+
+.term-label {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.term-empty {
+    display: inline-block;
+    width: 8px;
+    text-align: center;
+    color: #666;
+    font-weight: bold;
+}
+
+.term-checked {
+    display: inline-block;
+    width: 8px;
+    text-align: center;
+    color: #0f0;
+    font-weight: bold;
+    animation: terminal-blink 1s infinite;
+}
+
+@keyframes terminal-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.6; }
+}
+
+.term-messages {
+    border-top: 1px solid #0f0;
+    padding-top: 2px;
+    font-size: 6px;
+    min-height: 0;
+    max-height: 30px;
+    overflow-y: auto;
+}
+
+.term-msg {
+    margin-bottom: 1px;
+    animation: term-appear 0.3s ease-in;
+}
+
+@keyframes term-appear {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== SIGNAL MONITOR ===== */
+#signal-monitor {
+  background: #080b14;
+  border-radius: 6px;
+  padding: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #c8d8f0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  font-size: 8px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#signal-monitor .sm-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+#signal-monitor .sm-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #c8d8f0;
+}
+
+#signal-monitor .sm-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #4a7ab5;
+  text-transform: uppercase;
+  margin: 0 0 2px;
+}
+
+#signal-monitor .sm-subtitle {
+  font-size: 6px;
+  color: #2e4a6a;
+  letter-spacing: 0.05em;
+  margin: 0 0 4px;
+}
+
+#signal-monitor .sm-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px;
+  border: 0.5px solid #1a2d4a;
+  border-radius: 3px;
+  background: #0b1220;
+  margin-bottom: 6px;
+  font-size: 6px;
+  letter-spacing: 0.05em;
+}
+
+#signal-monitor .sm-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #1a2d4a;
+  flex-shrink: 0;
+}
+
+#signal-monitor .sm-dot.live {
+  background: #1d9e75;
+  box-shadow: 0 0 4px #1d9e75;
+}
+
+#signal-monitor .sm-dot.error {
+  background: #a32d2d;
+  box-shadow: 0 0 4px #a32d2d;
+}
+
+#signal-monitor .sm-dot.connecting {
+  animation: sm-dot-pulse 1s infinite;
+}
+
+@keyframes sm-dot-pulse {
+  0%, 100% { background: #ba7517; }
+  50%       { background: #1a2d4a; }
+}
+
+#signal-monitor .sm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+#signal-monitor .sm-panel {
+  border: 0.5px solid #1a2d4a;
+  border-radius: 3px;
+  padding: 4px;
+  background: #0b1220;
+}
+
+#signal-monitor .sm-panel-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin: 0 0 1px;
+}
+
+#signal-monitor .sm-bar-track {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 3px;
+}
+
+#signal-monitor .sm-seg {
+  flex: 1;
+  height: 8px;
+  border-radius: 1px;
+  transition: background 0.08s;
+}
+
+#signal-monitor .sm-pct {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+#signal-monitor .sm-pct-unit {
+  font-size: 6px;
+  color: #2e4a6a;
+  margin-left: 1px;
+}
+
+#signal-monitor .sm-solved {
+  border: 0.5px solid #1d5c3a;
+  background: #071410;
+  border-radius: 3px;
+  padding: 4px;
+  text-align: center;
+  display: none;
+}
+
+#signal-monitor .sm-solved.show {
+  display: block;
+}
+
+#signal-monitor .sm-solved-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px;
+  font-weight: 500;
+  color: #1d9e75;
+  letter-spacing: 0.1em;
+  margin: 0 0 1px;
+}
+
+#signal-monitor .sm-solved-sub {
+  font-size: 6px;
+  color: #0f6e56;
+  letter-spacing: 0.05em;
+  margin: 0;
 }

@@ -74,6 +74,15 @@ function publishValue(topic, value) {
   }
 }
 
+// Expose solved state globally for web interface
+let globalSolvedState = false;
+function setSolvedState(state) {
+  globalSolvedState = state;
+  if (state) {
+    console.log("[ARDUINO] Puzzle SOLVED!");
+  }
+}
+
 // Connect to Serial Port
 function connectSerial() {
   serialPort = new SerialPort.SerialPort({
@@ -130,6 +139,7 @@ function parseArduinoData(line) {
     const bar1Solved = bar1SolvedMatch[1] === "YES";
     const bar2Solved = bar2SolvedMatch[1] === "YES";
     const overallSolved = bar1Solved && bar2Solved;
+    setSolvedState(overallSolved);
     publishValue(MQTT_TOPICS.solved, overallSolved ? "true" : "false");
   }
 }

@@ -124,7 +124,9 @@
     } else if (topic === CONFIG.topicBar2) {
       render(bar1Val, parseInt(val, 10));
     } else if (topic === CONFIG.topicSolved) {
-      setSolved(val === 'true');
+      const isSolved = val === 'true';
+      setSolved(isSolved);
+      window.MQTT_SOLVED = isSolved; // Expose to puzzle progression system
     }
   });
 
