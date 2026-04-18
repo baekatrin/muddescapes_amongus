@@ -1,7 +1,12 @@
+html {
+    height: auto;
+    overflow-y: scroll;
+}
+
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: auto;
     background-color: black; /* The main background color */
     background-image:
         /* Layer 1: Smallest, most frequent dots */
@@ -28,27 +33,19 @@ body {
         130px 270px, 
         70px 100px,
         250px 350px;
-    
-    /* Ensure content doesn't overflow and cause scrolling issues if desired */
-    overflow: hidden; 
 }
 
 .cctv-container {
-    display: grid !important;
-    grid-template-columns: 3.5fr 2fr;
-    grid-template-rows: auto 1fr;
+    display: block;
     width: 100%;
-    grid-template-areas:
-    "cctv-date-time ."
-    "cctv-display knob-container";
 }
 
 .cctv-date-time {
-    grid-area: cctv-date-time;
     display: flex;
     gap: 15px;
     align-items: center;
     flex-wrap: wrap;
+    padding: 15px;
 }
 
 .cctv-date-time label {
@@ -56,18 +53,17 @@ body {
 }
 
 .cctv-display {
-    grid-area: cctv-display;
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     grid-template-rows: min-content min-content;
     gap: 10px 10px;
-    height: fit-content;
-
     max-width: 1200px;
+    width: 100%;
     padding: 10px;
     border: 50px solid transparent;
     border-image: url("./data/cctv-border.png");
     border-image-slice: 98;
+    box-sizing: border-box;
 }
 
 .cctv-display video {
@@ -116,11 +112,14 @@ body {
 }
 
 .knob-container {
-    grid-area: knob-container;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto;
     row-gap: 10px;
+    column-gap: 10px;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
 }
 
 .knob {
