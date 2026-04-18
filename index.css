@@ -85,31 +85,19 @@ body {
     gap: 4px;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
 .cctv-display video {
-    width: 100% !important;
+    width: 100%;
     height: 100%;
     display: block;
-    filter: blur(15px) grayscale;
     object-fit: cover;
 }
-
 
 .cctv-cam {
     position: relative;
     overflow: hidden;
-}
-
-.cctv-label {
-    position: absolute;
-    left: 8px;
-    bottom: 2px;
-    z-index: 20;
-    font-family: monospace;
-    font-size: 10px;
-    color: white;
-    margin: 0;
 }
 
 .cctv-cam img {
@@ -178,8 +166,8 @@ body {
 
 @keyframes glitch-flicker {
     0%, 100% { opacity: 1; }
-    5%, 15% { opacity: 0.7; }
-    10% { opacity: 0.9; }
+    5%, 15%  { opacity: 0.7; }
+    10%      { opacity: 0.9; }
 }
 
 .cctv-label {
@@ -203,23 +191,32 @@ body {
     aspect-ratio: 16/9;
 }
 
+/* ===== KNOB CONTAINER ===== */
 .knob-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    row-gap: 12px;
-    column-gap: 12px;
+    row-gap: 8px;
+    column-gap: 8px;
     justify-items: center;
     flex: 1;
-    align-content: start;
+    align-content: center;
 }
 
-.knob-wrapper {
+/* Each knob div: knob + LED side by side */
+.knob {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Right side of knob: value + LED stacked */
+.knob-side {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    width: 85px;
+    gap: 4px;
 }
 
 input-knob {
@@ -227,6 +224,7 @@ input-knob {
     height: 75px;
     padding: 0;
     border: none;
+    flex-shrink: 0;
 }
 
 input-knob::part(rotator) {
@@ -236,24 +234,6 @@ input-knob::part(rotator) {
     border-radius: 100%;
     width: 75px;
     height: 75px;
-}
-
-.knob-marker {
-    display: inline-block;
-    width: 100%;
-    text-align: center;
-    font: bold 16px monospace;
-    color: #0f0;
-    text-shadow: 0 0 5px #0f0;
-    user-select: none;
-}
-
-.knob-value-display {
-    font: bold 12px monospace;
-    color: #0f0;
-    text-shadow: 0 0 8px #0f0;
-    min-width: 30px;
-    text-align: center;
 }
 
 .knob-inner {
@@ -279,20 +259,20 @@ input-knob::part(rotator) {
     box-shadow: 0 0 8px #6A767F;
 }
 
-.knob-label {
+.show-value {
     font-family: 'Courier New', monospace;
-    font-size: 8px;
+    font-size: 9px;
     color: #0f0;
-    font-weight: bold;
-    text-transform: uppercase;
+    text-shadow: 0 0 6px #0f0;
     margin: 0;
+    text-align: center;
+    min-width: 28px;
 }
 
 .led {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 22px;
 }
 
 .led img {
@@ -301,11 +281,7 @@ input-knob::part(rotator) {
     object-fit: contain;
 }
 
-.checklist {
-    color: white;
-}
-
-/* Progress Terminal */
+/* ===== PROGRESS TERMINAL ===== */
 .progress-terminal {
     max-width: 100%;
     padding: 6px;
@@ -336,7 +312,6 @@ input-knob::part(rotator) {
 
 .term-lines {
     margin-bottom: 4px;
-    flex: 1;
 }
 
 .term-line {
@@ -378,7 +353,7 @@ input-knob::part(rotator) {
 }
 
 @keyframes terminal-blink {
-    0%, 49% { opacity: 1; }
+    0%, 49%  { opacity: 1; }
     50%, 100% { opacity: 0.6; }
 }
 
@@ -387,7 +362,7 @@ input-knob::part(rotator) {
     padding-top: 2px;
     font-size: 6px;
     min-height: 0;
-    max-height: 30px;
+    max-height: 60px;
     overflow-y: auto;
 }
 
@@ -397,176 +372,174 @@ input-knob::part(rotator) {
 }
 
 @keyframes term-appear {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.checklist {
+    color: white;
 }
 
 /* ===== SIGNAL MONITOR ===== */
 #signal-monitor {
-  background: #080b14;
-  border-radius: 6px;
-  padding: 6px;
-  font-family: 'Share Tech Mono', monospace;
-  color: #c8d8f0;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  font-size: 8px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+    background: #080b14;
+    border-radius: 6px;
+    padding: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    color: #c8d8f0;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    font-size: 8px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 #signal-monitor .sm-stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
 
 #signal-monitor .sm-star {
-  position: absolute;
-  border-radius: 50%;
-  background: #c8d8f0;
+    position: absolute;
+    border-radius: 50%;
+    background: #c8d8f0;
 }
 
 #signal-monitor .sm-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: #4a7ab5;
-  text-transform: uppercase;
-  margin: 0 0 2px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: #4a7ab5;
+    text-transform: uppercase;
+    margin: 0 0 2px;
 }
 
 #signal-monitor .sm-subtitle {
-  font-size: 6px;
-  color: #2e4a6a;
-  letter-spacing: 0.05em;
-  margin: 0 0 4px;
+    font-size: 6px;
+    color: #2e4a6a;
+    letter-spacing: 0.05em;
+    margin: 0 0 4px;
 }
 
 #signal-monitor .sm-status {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 5px;
-  border: 0.5px solid #1a2d4a;
-  border-radius: 3px;
-  background: #0b1220;
-  margin-bottom: 6px;
-  font-size: 6px;
-  letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 5px;
+    border: 0.5px solid #1a2d4a;
+    border-radius: 3px;
+    background: #0b1220;
+    margin-bottom: 6px;
+    font-size: 6px;
+    letter-spacing: 0.05em;
 }
 
 #signal-monitor .sm-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #1a2d4a;
-  flex-shrink: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #1a2d4a;
+    flex-shrink: 0;
 }
 
 #signal-monitor .sm-dot.live {
-  background: #1d9e75;
-  box-shadow: 0 0 4px #1d9e75;
+    background: #1d9e75;
+    box-shadow: 0 0 4px #1d9e75;
 }
 
 #signal-monitor .sm-dot.error {
-  background: #a32d2d;
-  box-shadow: 0 0 4px #a32d2d;
+    background: #a32d2d;
+    box-shadow: 0 0 4px #a32d2d;
 }
 
 #signal-monitor .sm-dot.connecting {
-  animation: sm-dot-pulse 1s infinite;
+    animation: sm-dot-pulse 1s infinite;
 }
 
 @keyframes sm-dot-pulse {
-  0%, 100% { background: #ba7517; }
-  50%       { background: #1a2d4a; }
+    0%, 100% { background: #ba7517; }
+    50%      { background: #1a2d4a; }
 }
 
 #signal-monitor .sm-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-bottom: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 6px;
 }
 
 #signal-monitor .sm-panel {
-  border: 0.5px solid #1a2d4a;
-  border-radius: 3px;
-  padding: 4px;
-  background: #0b1220;
+    border: 0.5px solid #1a2d4a;
+    border-radius: 3px;
+    padding: 4px;
+    background: #0b1220;
 }
 
 #signal-monitor .sm-panel-label {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 7px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  margin: 0 0 1px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    margin: 0 0 1px;
 }
 
 #signal-monitor .sm-bar-track {
-  display: flex;
-  gap: 1px;
-  margin-bottom: 3px;
+    display: flex;
+    gap: 1px;
+    margin-bottom: 3px;
 }
 
 #signal-monitor .sm-seg {
-  flex: 1;
-  height: 8px;
-  border-radius: 1px;
-  transition: background 0.08s;
+    flex: 1;
+    height: 8px;
+    border-radius: 1px;
+    transition: background 0.08s;
 }
 
 #signal-monitor .sm-pct {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
 }
 
 #signal-monitor .sm-pct-unit {
-  font-size: 6px;
-  color: #2e4a6a;
-  margin-left: 1px;
+    font-size: 6px;
+    color: #2e4a6a;
+    margin-left: 1px;
 }
 
 #signal-monitor .sm-solved {
-  border: 0.5px solid #1d5c3a;
-  background: #071410;
-  border-radius: 3px;
-  padding: 4px;
-  text-align: center;
-  display: none;
+    border: 0.5px solid #1d5c3a;
+    background: #071410;
+    border-radius: 3px;
+    padding: 4px;
+    text-align: center;
+    display: none;
 }
 
 #signal-monitor .sm-solved.show {
-  display: block;
+    display: block;
 }
 
 #signal-monitor .sm-solved-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 7px;
-  font-weight: 500;
-  color: #1d9e75;
-  letter-spacing: 0.1em;
-  margin: 0 0 1px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    font-weight: 500;
+    color: #1d9e75;
+    letter-spacing: 0.1em;
+    margin: 0 0 1px;
 }
 
 #signal-monitor .sm-solved-sub {
-  font-size: 6px;
-  color: #0f6e56;
-  letter-spacing: 0.05em;
-  margin: 0;
+    font-size: 6px;
+    color: #0f6e56;
+    letter-spacing: 0.05em;
+    margin: 0;
 }

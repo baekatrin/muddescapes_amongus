@@ -8,9 +8,11 @@
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="nav.css" />
   <!-- Input Knob Web Component -->
-  <script type="module" src="https://unpkg.com/input-knob"></script>
+  <script src="https://unpkg.com/input-knob/dist/input-knob.umd.js"></script>
   <!-- MQTT.js WebSocket Client -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script src="mqtt-bridge.js"></script>
+  
 </head>
 
 <body class="has-fixed-nav">
@@ -29,6 +31,7 @@
 
   <!-- Main 2x2 Grid -->
   <div class="main-grid">
+
     <!-- TOP LEFT: CCTV CAMERAS -->
     <div class="grid-item">
       <div class="item-header">CCTV FEED</div>
@@ -39,67 +42,59 @@
         <input type="time" id="time" name="footage-time">
       </div>
       <div class="cctv-display">
-      <div class="cctv-cam">
-        <video id="vid1" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <img class="cctv-glitch-overlay" data-cam="1" src="./data/glitch1.gif" alt="Glitch">
-        <img class="cctv-static-room" data-cam="1" src="./data/static-rooms/airlock-static.jpg" alt="Room 1" style="display: none;">
-        <div class="cctv-room-caption" data-cam="1" style="display: none;">AIRLOCK</div>
-        <button class="cctv-mute" data-cam="1" onclick="toggleMute(this)" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
-            <path
-              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+        <div class="cctv-cam">
+          <video id="vid1" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+          <img class="cctv-glitch-overlay" data-cam="1" src="./data/glitch1.gif" alt="Glitch">
+          <img class="cctv-static-room" data-cam="1" src="./data/static-rooms/airlock-static.jpg" alt="Room 1" style="display: none;">
+          <div class="cctv-room-caption" data-cam="1" style="display: none;">AIRLOCK</div>
+          <button class="cctv-mute" data-cam="1" onclick="toggleMute(this)" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+              <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
             </svg>
-        </button>
-        <p class="cctv-label"> CAM 1 </p>
-        <img src="./data/rec-overlay.png" class="cctv-rec-overlay"></image>
-      </div>
-      <div class="cctv-cam">
-        <video id="vid2" src="./data/videoplayback2.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <img class="cctv-glitch-overlay" data-cam="2" src="./data/glitch2.gif" alt="Glitch">
-        <img class="cctv-static-room" data-cam="2" src="./data/static-rooms/conference-room-static.jpg" alt="Room 2" style="display: none;">
-        <div class="cctv-room-caption" data-cam="2" style="display: none;">CONFERENCE</div>
-        <button class="cctv-mute" data-cam="2" onclick="toggleMute(this)" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
-            <path
-              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </button>
+          <p class="cctv-label">CAM 1</p>
+          <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
+        </div>
+        <div class="cctv-cam">
+          <video id="vid2" src="./data/videoplayback2.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+          <img class="cctv-glitch-overlay" data-cam="2" src="./data/glitch2.gif" alt="Glitch">
+          <img class="cctv-static-room" data-cam="2" src="./data/static-rooms/conference-room-static.jpg" alt="Room 2" style="display: none;">
+          <div class="cctv-room-caption" data-cam="2" style="display: none;">CONFERENCE</div>
+          <button class="cctv-mute" data-cam="2" onclick="toggleMute(this)" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+              <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
             </svg>
-        </button>
-        <p class="cctv-label"> CAM 2 </p>
-        <img src="./data/rec-overlay.png" class="cctv-rec-overlay"></image>
-      </div>
-      <div class="cctv-cam">
-        <video id="vid3" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <img class="cctv-glitch-overlay" data-cam="3" src="./data/glitch1.gif" alt="Glitch">
-        <img class="cctv-static-room" data-cam="3" src="./data/static-rooms/electrical-static.jpg" alt="Room 3" style="display: none;">
-        <div class="cctv-room-caption" data-cam="3" style="display: none;">ELECTRICAL</div>
-        <button class="cctv-mute" data-cam="3" onclick="toggleMute(this)" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
-            <path
-              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </button>
+          <p class="cctv-label">CAM 2</p>
+          <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
+        </div>
+        <div class="cctv-cam">
+          <video id="vid3" src="./data/videoplayback.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+          <img class="cctv-glitch-overlay" data-cam="3" src="./data/glitch1.gif" alt="Glitch">
+          <img class="cctv-static-room" data-cam="3" src="./data/static-rooms/electrical-static.jpg" alt="Room 3" style="display: none;">
+          <div class="cctv-room-caption" data-cam="3" style="display: none;">ELECTRICAL</div>
+          <button class="cctv-mute" data-cam="3" onclick="toggleMute(this)" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+              <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
             </svg>
-        </button>
-        <p class="cctv-label"> CAM 3 </p>
-        <img src="./data/rec-overlay.png" class="cctv-rec-overlay"></image>
-      </div>
-      <div class="cctv-cam">
-        <video id="vid4" src="./data/videoplayback2.mp4" type="video/mp4" loop autoplay muted playsinline></video>
-        <img class="cctv-glitch-overlay" data-cam="4" src="./data/glitch2.gif" alt="Glitch">
-        <img class="cctv-static-room" data-cam="4" src="./data/static-rooms/plaza-static.jpg" alt="Room 4" style="display: none;">
-        <div class="cctv-room-caption" data-cam="4" style="display: none;">PLAZA</div>
-        <button class="cctv-mute" data-cam="4" onclick="toggleMute(this)" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
-            <path
-              d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
+          </button>
+          <p class="cctv-label">CAM 3</p>
+          <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
+        </div>
+        <div class="cctv-cam">
+          <video id="vid4" src="./data/videoplayback2.mp4" type="video/mp4" loop autoplay muted playsinline></video>
+          <img class="cctv-glitch-overlay" data-cam="4" src="./data/glitch2.gif" alt="Glitch">
+          <img class="cctv-static-room" data-cam="4" src="./data/static-rooms/plaza-static.jpg" alt="Room 4" style="display: none;">
+          <div class="cctv-room-caption" data-cam="4" style="display: none;">PLAZA</div>
+          <button class="cctv-mute" data-cam="4" onclick="toggleMute(this)" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
+              <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
             </svg>
-        </button>
-        <p class="cctv-label">CAM 4</p>
-        <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
+          </button>
+          <p class="cctv-label">CAM 4</p>
+          <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
+        </div>
       </div>
-    </div>
     </div>
 
     <!-- TOP RIGHT: PROGRESS TERMINAL -->
@@ -108,9 +103,9 @@
       <div class="progress-terminal">
         <div class="term-header">PUZZLE_STATUS v1.0</div>
         <div class="term-lines">
-          <div class="term-line"><span class="term-bracket">[</span><span id="knob-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Knob Config</span></div>
-          <div class="term-line"><span class="term-bracket">[</span><span id="date-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Date/Time</span></div>
-          <div class="term-line"><span class="term-bracket">[</span><span id="arduino-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Arduino</span></div>
+          <div class="term-line"><span class="term-bracket">[</span><span id="knob-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Knob Config</span></div>
+          <div class="term-line"><span class="term-bracket">[</span><span id="date-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Date/Time</span></div>
+          <div class="term-line"><span class="term-bracket">[</span><span id="arduino-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Arduino</span></div>
         </div>
         <div class="term-messages" id="term-messages"></div>
       </div>
@@ -146,41 +141,54 @@
       </div>
     </div>
 
-      <div class="knob" id="knob3">
-        <input-knob value="0" scale="100" min="0" max="100">
-          <div class="knob-inner"></div>
-        </input-knob>
-        <div class="led">
-          <img id="led3" src="./data/led-off.png" width="50" height="45"></image>
-        </div>
-      </div>
+    <!-- BOTTOM RIGHT: KNOB CONTROLS -->
+<div class="grid-item">
+  <div class="item-header">FREQUENCY CONFIG</div>
+  <div class="knob-container">
 
-      <div class="knob" id="knob4">
-        <input-knob value="0" scale="100" min="0" max="100">
-          <div class="knob-inner"></div>
-        </input-knob>
-        <div class="led">
-          <img id="led4" src="./data/led-off.png" width="50" height="45"></image>
-        </div>
+    <div class="knob" id="knob1">
+      <input-knob value="0" scale="100" min="0" max="100">
+        <div class="knob-inner"></div>
+      </input-knob>
+      <div class="knob-side">
+        <p class="show-value">0</p>
+        <div class="led"><img id="led1" src="./data/led-off.png"></div>
+      </div>
+    </div>
+
+    <div class="knob" id="knob2">
+      <input-knob value="0" scale="100" min="0" max="100">
+        <div class="knob-inner"></div>
+      </input-knob>
+      <div class="knob-side">
+        <p class="show-value">0</p>
+        <div class="led"><img id="led2" src="./data/led-off.png"></div>
+      </div>
+    </div>
+
+    <div class="knob" id="knob3">
+      <input-knob value="0" scale="100" min="0" max="100">
+        <div class="knob-inner"></div>
+      </input-knob>
+      <div class="knob-side">
+        <p class="show-value">0</p>
+        <div class="led"><img id="led3" src="./data/led-off.png"></div>
+      </div>
+    </div>
+
+    <div class="knob" id="knob4">
+      <input-knob value="0" scale="100" min="0" max="100">
+        <div class="knob-inner"></div>
+      </input-knob>
+      <div class="knob-side">
+        <p class="show-value">0</p>
+        <div class="led"><img id="led4" src="./data/led-off.png"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="checklist">
-    <p hidden id="knobs-success">Knobs are correct! Audio capabilities have been restored.</p>
-    <p hidden id="date-time-success">Date and time are correct! Footage has been displayed.</p>
-  </div>
-
-  <!-- Progress Terminal -->
-  <div class="progress-terminal">
-    <div class="term-header">PUZZLE_STATUS v1.0</div>
-    <div class="term-lines">
-      <div class="term-line"><span class="term-bracket">[</span><span id="knob-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Knob Configuration</span></div>
-      <div class="term-line"><span class="term-bracket">[</span><span id="date-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Date/Time Verification</span></div>
-      <div class="term-line"><span class="term-bracket">[</span><span id="arduino-status" class="term-empty">  </span><span class="term-bracket">]</span> <span class="term-label">Physical Puzzle (Arduino)</span></div>
-    </div>
-    <div class="term-messages" id="term-messages"></div>
-  </div>
+  </div> <!-- end .main-grid -->
 
   <!-- Signal Monitor Component Styles -->
   <style>
@@ -267,6 +275,12 @@
     }
 
     @keyframes sm-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+
+  <script src="index.js"></script>
 </body>
 
 </html>
