@@ -15,18 +15,11 @@ const SERIAL_BAUD = 115200;
 
 const MQTT_BROKER = "wss://broker.hivemq.com:8884/mqtt";
 const MQTT_CLIENT_ID = `victor-bridge-${Math.random().toString(16).substr(2, 8)}`;
-// Same topic prefix as libmuddescapes: muddescapes/data/<puzzle>/...
-// (matches mqtt-bridge.js + ESP me.init(..., "Victor", ...))
-const PUZZLE_NAME = "Victor";
-const VAR_SOLVED_LABEL = "Current state of Victor's puzzle";
-
 const MQTT_TOPICS = {
-  bar1: "muddescapes/data/" + PUZZLE_NAME + "/bar1",
-  bar2: "muddescapes/data/" + PUZZLE_NAME + "/bar2",
+  bar1: "victor/bar1",
+  bar2: "victor/bar2",
+  solved: "victor/solved"
 };
-
-const TOPIC_VAR_SOLVED =
-  "muddescapes/data/" + PUZZLE_NAME + "/" + VAR_SOLVED_LABEL;
 
 // MQTT Client
 let mqttClient = null;
@@ -70,7 +63,7 @@ function connectMQTT() {
 
 function publishStatus(status) {
   if (mqttClient && isConnected) {
-    mqttClient.publish("muddescapes/data/" + PUZZLE_NAME + "/bridge-status", status);
+    mqttClient.publish("victor/bridge-status", status);
   }
 }
 
@@ -147,12 +140,8 @@ function parseArduinoData(line) {
     const bar1Solved = bar1SolvedMatch[1] === "YES";
     const bar2Solved = bar2SolvedMatch[1] === "YES";
     const overallSolved = bar1Solved && bar2Solved;
-<<<<<<< HEAD
     setSolvedState(overallSolved);
     publishValue(MQTT_TOPICS.solved, overallSolved ? "true" : "false");
-=======
-    publishValue(TOPIC_VAR_SOLVED, overallSolved ? 1 : 0);
->>>>>>> database-page
   }
 }
 

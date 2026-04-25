@@ -17,7 +17,6 @@ const UNMUTE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
    Stage 3 — 3 solved: real room videos replace static images, full audio
    ============================================================ */
 
-// Real video sources per cam
 const REAL_VIDEOS = {
   1: './data/real-rooms/airlock-real.mp4',
   2: './data/real-rooms/conference-room-real.mp4',
@@ -29,6 +28,40 @@ const puzzleState = { knobsSolved: false, dateSolved: false, arduinoSolved: fals
 
 function getStage() {
   return Object.values(puzzleState).filter(Boolean).length;
+}
+
+// === localStorage helpers ===
+
+function saveState() {
+  localStorage.setItem('muddescapes_puzzleState', JSON.stringify(puzzleState));
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('muddescapes_puzzleState');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      Object.assign(puzzleState, parsed);
+    }
+  } catch (e) {
+    console.warn('Could not load saved puzzle state:', e);
+  }
+}
+
+function resetPuzzle() {
+  localStorage.removeItem('muddescapes_puzzleState');
+  puzzleState.knobsSolved   = false;
+  puzzleState.dateSolved    = false;
+  puzzleState.arduinoSolved = false;
+  realVideosLoaded = false;
+
+  if (dateInput) { dateInput.disabled = false; dateInput.value = '2050-01-01'; }
+  if (timeInput) { timeInput.disabled = false; timeInput.value = ''; }
+  document.querySelectorAll('input-knob').forEach(k => k.style.pointerEvents = 'auto');
+
+  updateTerminal();
+  updateVideoState();
+  console.log('Puzzle state reset.');
 }
 
 // === Terminal ===
@@ -73,37 +106,28 @@ function updateVideoState() {
     if (!glitch || !staticImg || !caption || !muteBtn || !video) continue;
 
     if (stage === 0) {
-      // Glitch only, no audio buttons
       glitch.style.display    = 'block';
       staticImg.style.display = 'none';
       caption.style.display   = 'none';
       muteBtn.style.display   = 'none';
       video.muted = true;
-
     } else if (stage === 1) {
-      // Static room images + captions, still no audio buttons
       glitch.style.display    = 'none';
       staticImg.style.display = 'block';
       caption.style.display   = 'block';
       muteBtn.style.display   = 'none';
       video.muted = true;
-
     } else if (stage === 2) {
-      // Static room images still showing, but audio buttons now available
       glitch.style.display    = 'none';
       staticImg.style.display = 'block';
       caption.style.display   = 'block';
       muteBtn.style.display   = 'block';
       video.muted = true;
-
     } else if (stage === 3) {
-      // Swap to real videos, hide static image/caption, full audio
       glitch.style.display    = 'none';
       staticImg.style.display = 'none';
       caption.style.display   = 'none';
       muteBtn.style.display   = 'block';
-
-      // Swap video src to real room if not already done
       if (!realVideosLoaded) {
         video.src   = REAL_VIDEOS[cam];
         video.muted = false;
@@ -119,9 +143,15 @@ function updateVideoState() {
 // === Solve a Puzzle Component ===
 
 function solvePuzzle(component) {
-  if (puzzleState[component]) return; // don't double-fire
+  if (puzzleState[component]) return;
   puzzleState[component] = true;
+  saveState();
   const stage = getStage();
+
+  if (component === 'dateSolved') {
+    if (dateInput) dateInput.disabled = true;
+    if (timeInput) timeInput.disabled = true;
+  }
 
   updateTerminal();
   updateVideoState();
@@ -149,11 +179,10 @@ function solvePuzzle(component) {
 
 function toggleMute(btn) {
   const cam = btn.getAttribute('data-cam');
-  if (getStage() < 2) return; // audio not available until stage 2
+  if (getStage() < 2) return;
   const video    = document.querySelector(`#vid${cam}`);
   const wasMuted = video.muted;
 
-  // Mute everything first
   document.querySelectorAll('video').forEach(v => v.muted = true);
   document.querySelectorAll('.cctv-mute').forEach(b => b.innerHTML = MUTE_SVG);
 
@@ -206,14 +235,14 @@ knobTargets.forEach(({ id, min, max, led }) => {
 // DATE / TIME
 // ============================================================
 
-let isDate = false, isTime = false;
 const dateInput = document.querySelector('#date');
 const timeInput = document.querySelector('#time');
 
 function checkDateTime() {
-  isDate = dateInput.value === '2083-01-01';
-  isTime = timeInput.value === '10:00';
-  if (isDate && isTime) solvePuzzle('dateSolved');
+  console.log('date:', dateInput.value, '| time:', timeInput.value);
+  const correctDate = dateInput.value === '2083-09-30';
+  const correctTime = timeInput.value === '13:14';
+  if (correctDate && correctTime) solvePuzzle('dateSolved');
 }
 
 if (dateInput) dateInput.addEventListener('change', checkDateTime);
@@ -228,8 +257,18 @@ setInterval(() => {
 }, 500);
 
 // ============================================================
-// INIT
+// INIT — restore saved state, then update UI
 // ============================================================
+
+loadState();
+
+if (puzzleState.knobsSolved) {
+  document.querySelectorAll('input-knob').forEach(k => k.style.pointerEvents = 'none');
+}
+if (puzzleState.dateSolved) {
+  if (dateInput) { dateInput.disabled = true; dateInput.value = '2083-09-30'; }
+  if (timeInput) { timeInput.disabled = true; timeInput.value = '13:14'; }
+}
 
 updateVideoState();
 updateTerminal();
