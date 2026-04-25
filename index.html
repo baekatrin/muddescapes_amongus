@@ -7,12 +7,9 @@
   <title>CCTV Footage and Database</title>
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="nav.css" />
-  <!-- Input Knob Web Component -->
   <script src="https://unpkg.com/input-knob/dist/input-knob.umd.js"></script>
-  <!-- MQTT.js WebSocket Client -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <script src="mqtt-bridge.js"></script>
-  
 </head>
 
 <body class="has-fixed-nav">
@@ -29,11 +26,10 @@
     <hr class="nav-rule">
   </header>
 
-  <!-- Main 2x2 Grid -->
   <div class="main-grid">
 
-    <!-- TOP LEFT: CCTV CAMERAS -->
-    <div class="grid-item">
+    <!-- ROW 1: CCTV FEED (spans all 3 columns) -->
+    <div class="grid-item-cctv">
       <div class="item-header">CCTV FEED</div>
       <div class="cctv-date-time">
         <label for="date">Date:</label>
@@ -43,7 +39,7 @@
       </div>
       <div class="cctv-display">
         <div class="cctv-cam">
-          <video id="vid1" src="./data/glitch1.gif" type="video/mp4" loop autoplay muted playsinline></video>
+          <video id="vid1" loop autoplay muted playsinline></video>
           <img class="cctv-glitch-overlay" data-cam="1" src="./data/glitch1.gif" alt="Glitch">
           <img class="cctv-static-room" data-cam="1" src="./data/static-rooms/airlock-static.jpg" alt="Room 1" style="display: none;">
           <div class="cctv-room-caption" data-cam="1" style="display: none;">AIRLOCK</div>
@@ -56,10 +52,10 @@
           <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
         </div>
         <div class="cctv-cam">
-          <video id="vid2" src="./data/glitch2.gif" type="video/mp4" loop autoplay muted playsinline></video>
+          <video id="vid2" loop autoplay muted playsinline></video>
           <img class="cctv-glitch-overlay" data-cam="2" src="./data/glitch2.gif" alt="Glitch">
           <img class="cctv-static-room" data-cam="2" src="./data/static-rooms/conference-room-static.jpg" alt="Room 2" style="display: none;">
-          <div class="cctv-room-caption" data-cam="2">CONFERENCE</div>
+          <div class="cctv-room-caption" data-cam="2" style="display: none;">CONFERENCE</div>
           <button class="cctv-mute" data-cam="2" onclick="toggleMute(this)" style="display: none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute-fill" viewBox="0 0 16 16">
               <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0" />
@@ -69,7 +65,7 @@
           <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
         </div>
         <div class="cctv-cam">
-          <video id="vid3" src="./data/glitch1.gif" type="video/mp4" loop autoplay muted playsinline></video>
+          <video id="vid3" loop autoplay muted playsinline></video>
           <img class="cctv-glitch-overlay" data-cam="3" src="./data/glitch1.gif" alt="Glitch">
           <img class="cctv-static-room" data-cam="3" src="./data/static-rooms/electrical-static.jpg" alt="Room 3" style="display: none;">
           <div class="cctv-room-caption" data-cam="3" style="display: none;">ELECTRICAL</div>
@@ -82,7 +78,7 @@
           <img src="./data/rec-overlay.png" class="cctv-rec-overlay">
         </div>
         <div class="cctv-cam">
-          <video id="vid4" src="./data/glitch1.gif" type="video/mp4" loop autoplay muted playsinline></video>
+          <video id="vid4" loop autoplay muted playsinline></video>
           <img class="cctv-glitch-overlay" data-cam="4" src="./data/glitch2.gif" alt="Glitch">
           <img class="cctv-static-room" data-cam="4" src="./data/static-rooms/plaza-static.jpg" alt="Room 4" style="display: none;">
           <div class="cctv-room-caption" data-cam="4" style="display: none;">PLAZA</div>
@@ -97,7 +93,50 @@
       </div>
     </div>
 
-    <!-- TOP RIGHT: PROGRESS TERMINAL -->
+    <!-- ROW 2 COL 1: KNOB CONTROLS -->
+    <div class="grid-item">
+      <div class="item-header">FREQUENCY CONFIG</div>
+      <div class="knob-container">
+        <div class="knob" id="knob1">
+          <input-knob value="0" scale="100" min="0" max="100">
+            <div class="knob-inner"></div>
+          </input-knob>
+          <div class="knob-side">
+            <p class="show-value">0</p>
+            <div class="led"><img id="led1" src="./data/led-off.png"></div>
+          </div>
+        </div>
+        <div class="knob" id="knob2">
+          <input-knob value="0" scale="100" min="0" max="100">
+            <div class="knob-inner"></div>
+          </input-knob>
+          <div class="knob-side">
+            <p class="show-value">0</p>
+            <div class="led"><img id="led2" src="./data/led-off.png"></div>
+          </div>
+        </div>
+        <div class="knob" id="knob3">
+          <input-knob value="0" scale="100" min="0" max="100">
+            <div class="knob-inner"></div>
+          </input-knob>
+          <div class="knob-side">
+            <p class="show-value">0</p>
+            <div class="led"><img id="led3" src="./data/led-off.png"></div>
+          </div>
+        </div>
+        <div class="knob" id="knob4">
+          <input-knob value="0" scale="100" min="0" max="100">
+            <div class="knob-inner"></div>
+          </input-knob>
+          <div class="knob-side">
+            <p class="show-value">0</p>
+            <div class="led"><img id="led4" src="./data/led-off.png"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2 COL 2: STATUS TERMINAL -->
     <div class="grid-item">
       <div class="item-header">STATUS</div>
       <div class="progress-terminal">
@@ -111,7 +150,7 @@
       </div>
     </div>
 
-    <!-- BOTTOM LEFT: SIGNAL MONITOR (ARDUINO) -->
+    <!-- ROW 2 COL 3: SIGNAL MONITOR -->
     <div class="grid-item">
       <div class="item-header">SIGNAL MONITOR</div>
       <div id="signal-monitor">
@@ -141,143 +180,10 @@
       </div>
     </div>
 
-    <!-- BOTTOM RIGHT: KNOB CONTROLS -->
-<div class="grid-item">
-  <div class="item-header">FREQUENCY CONFIG</div>
-  <div class="knob-container">
-
-    <div class="knob" id="knob1">
-      <input-knob value="0" scale="100" min="0" max="100">
-        <div class="knob-inner"></div>
-      </input-knob>
-      <div class="knob-side">
-        <p class="show-value">0</p>
-        <div class="led"><img id="led1" src="./data/led-off.png"></div>
-      </div>
-    </div>
-
-    <div class="knob" id="knob2">
-      <input-knob value="0" scale="100" min="0" max="100">
-        <div class="knob-inner"></div>
-      </input-knob>
-      <div class="knob-side">
-        <p class="show-value">0</p>
-        <div class="led"><img id="led2" src="./data/led-off.png"></div>
-      </div>
-    </div>
-
-    <div class="knob" id="knob3">
-      <input-knob value="0" scale="100" min="0" max="100">
-        <div class="knob-inner"></div>
-      </input-knob>
-      <div class="knob-side">
-        <p class="show-value">0</p>
-        <div class="led"><img id="led3" src="./data/led-off.png"></div>
-      </div>
-    </div>
-
-    <div class="knob" id="knob4">
-      <input-knob value="0" scale="100" min="0" max="100">
-        <div class="knob-inner"></div>
-      </input-knob>
-      <div class="knob-side">
-        <p class="show-value">0</p>
-        <div class="led"><img id="led4" src="./data/led-off.png"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
   </div> <!-- end .main-grid -->
 
-  <!-- Signal Monitor Component Styles -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500&display=swap');
-
-    #signal-monitor {
-      background: #080b14;
-      border-radius: 12px;
-      padding: 28px 24px 24px;
-      font-family: 'Share Tech Mono', monospace;
-      color: #c8d8f0;
-      max-width: 560px;
-      width: 100%;
-      box-sizing: border-box;
-      position: relative;
-      overflow: hidden;
-      margin: 20px auto;
-    }
-
-    #signal-monitor .sm-stars {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    #signal-monitor .sm-star {
-      position: absolute;
-      border-radius: 50%;
-      background: #c8d8f0;
-    }
-
-    #signal-monitor .sm-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      color: #4a7ab5;
-      text-transform: uppercase;
-      margin: 0 0 4px;
-    }
-
-    #signal-monitor .sm-subtitle {
-      font-size: 11px;
-      color: #2e4a6a;
-      letter-spacing: 0.08em;
-      margin: 0 0 24px;
-    }
-
-    #signal-monitor .sm-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border: 0.5px solid #1a2d4a;
-      border-radius: 8px;
-      background: #0b1220;
-      margin-bottom: 20px;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-    }
-
-    #signal-monitor .sm-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #1a2d4a;
-      flex-shrink: 0;
-      transition: background 0.4s;
-    }
-
-    #signal-monitor .sm-dot.connecting {
-      background: #ba7517;
-      animation: sm-pulse 1s infinite;
-    }
-
-    #signal-monitor .sm-dot.live {
-      background: #1d9e75;
-      animation: none;
-    }
-
-    #signal-monitor .sm-dot.error {
-      background: #a32d2d;
-      animation: none;
-    }
-
-    @keyframes sm-pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
   </style>
 
   <script src="index.js"></script>
