@@ -4,6 +4,9 @@ An immersive web-based escape room experience featuring multiple puzzle challeng
 
 ## 🎮 Quick Start
 
+cd /Users/ahnseojeong/Desktop/HMC/MuddEscapes                    
+python3 -m http.server 8000
+
 ### Prerequisites
 
 - Python 3+ OR Node.js/npm
