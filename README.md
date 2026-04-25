@@ -4,6 +4,9 @@ An immersive web-based escape room experience featuring multiple puzzle challeng
 
 ## 🎮 Quick Start
 
+cd /Users/ahnseojeong/Desktop/HMC/MuddEscapes                    
+python3 -m http.server 8000
+
 ### Prerequisites
 
 - Python 3+ OR Node.js/npm
@@ -26,6 +29,16 @@ npx serve .
 ```
 
 Then open **`http://localhost:8000`** in your browser.
+
+### Control center + ESP32 (Victor / signal monitor)
+
+The **repository root** `index.html` loads **`mqtt-bridge.js`**, which listens on the same MQTT topic pattern as **libmuddescapes** (see [muddescapes.cpp](https://github.com/muddescapes/libmuddescapes/blob/main/src/muddescapes.cpp)): `muddescapes/data/<puzzle>/<variable name>` with boolean payloads **`1`** / **`0`**.
+
+1. Build and flash **`template-main`** with PlatformIO. WiFi + `me.init(..., "mqtt://broker.hivemq.com", "Victor", ...)` must succeed so the ESP publishes to the broker.
+2. In **`mqtt-bridge.js`**, keep **`PUZZLE_NAME`** and **`VAR_SOLVED_LABEL`** in sync with `template-main/src/main.cpp` (puzzle string `"Victor"` and the exact `muddescapes_variable` label for the solved bool).
+3. Open **`index.html`** via your local server. The page uses **`wss://broker.hivemq.com:8884/mqtt`** (WebSocket); the ESP uses native MQTT to the same HiveMQ host.
+
+Bar graphs use extra topics `muddescapes/data/Victor/bar1` and `.../bar2` (not emitted by libmuddescapes). Use **`arduino-mqtt-bridge.js`** (serial from ESP) or add your own publisher so those topics receive `0`–`100`.
 
 ---
 

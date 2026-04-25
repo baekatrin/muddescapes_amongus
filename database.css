@@ -79,6 +79,20 @@ body {
   outline-offset: 2px;
 }
 
+.database-section-title {
+  margin: 4px 0 0 0;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #ccc;
+  letter-spacing: 0.05em;
+}
+
+.database-row-count {
+  margin: 0 0 4px 0;
+  font-size: 12px;
+  color: #888;
+}
+
 .code-reveal {
   padding: 12px 14px;
   background: rgba(0, 40, 0, 0.45);
