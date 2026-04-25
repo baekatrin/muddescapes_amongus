@@ -150,13 +150,13 @@ body {
 }
 
 .cctv-room-caption {
-    position: absolute;
+    position: relative;
     bottom: 2px;
-    left: 2px;
+    left: 30px;
     z-index: 16;
     font-family: 'Courier New', monospace;
-    font-size: 7px;
-    color: #0f0;
+    font-size: 80px;
+    color: rgb(255, 255, 255);
     text-shadow: 0 0 5px #0f0;
     font-weight: bold;
     letter-spacing: 0.5px;
