@@ -249,12 +249,18 @@ if (dateInput) dateInput.addEventListener('change', checkDateTime);
 if (timeInput) timeInput.addEventListener('change', checkDateTime);
 
 // ============================================================
-// ARDUINO (MQTT polling)
+// ARDUINO (MQTT: mqtt-bridge.js sets window.MQTT_SOLVED from victor/solved + bar thresholds)
 // ============================================================
 
-setInterval(() => {
+function tryArduinoMqttSolve() {
   if (window.MQTT_SOLVED === true) solvePuzzle('arduinoSolved');
-}, 500);
+}
+
+window.addEventListener('muddescapes-mqtt-solved-change', (e) => {
+  if (e.detail && e.detail.solved === true) tryArduinoMqttSolve();
+});
+
+setInterval(tryArduinoMqttSolve, 500);
 
 // ============================================================
 // INIT — restore saved state, then update UI
@@ -272,3 +278,6 @@ if (puzzleState.dateSolved) {
 
 updateVideoState();
 updateTerminal();
+
+// If MQTT already marked solved before this script finished (unlikely), honor it immediately.
+tryArduinoMqttSolve();
