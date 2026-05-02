@@ -405,7 +405,7 @@ input-knob::part(rotator) {
     border-radius: 6px;
     padding: 6px;
     font-family: 'Share Tech Mono', monospace;
-    color: #c8d8f0;
+    color: #0f0;
     width: 100%;
     box-sizing: border-box;
     position: relative;
@@ -426,7 +426,7 @@ input-knob::part(rotator) {
 #signal-monitor .sm-star {
     position: absolute;
     border-radius: 50%;
-    background: #c8d8f0;
+    background: #0f0;
 }
 
 #signal-monitor .sm-title {
@@ -434,14 +434,14 @@ input-knob::part(rotator) {
     font-size: 8px;
     font-weight: 500;
     letter-spacing: 0.1em;
-    color: #4a7ab5;
+    color: #0f0;
     text-transform: uppercase;
     margin: 0 0 2px;
 }
 
 #signal-monitor .sm-subtitle {
     font-size: 6px;
-    color: #2e4a6a;
+    color: #1f722a;
     letter-spacing: 0.05em;
     margin: 0 0 4px;
 }
@@ -451,7 +451,7 @@ input-knob::part(rotator) {
     align-items: center;
     gap: 4px;
     padding: 3px 5px;
-    border: 0.5px solid #1a2d4a;
+    border: 0.5px solid #000000;
     border-radius: 3px;
     background: #0b1220;
     margin-bottom: 6px;
@@ -463,13 +463,13 @@ input-knob::part(rotator) {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: #1a2d4a;
+    background: #101010;
     flex-shrink: 0;
 }
 
 #signal-monitor .sm-dot.live {
-    background: #1d9e75;
-    box-shadow: 0 0 4px #1d9e75;
+    background: #0f0;
+    box-shadow: 0 0 4px #0f0;
 }
 
 #signal-monitor .sm-dot.error {
@@ -530,7 +530,7 @@ input-knob::part(rotator) {
 
 #signal-monitor .sm-pct-unit {
     font-size: 6px;
-    color: #2e4a6a;
+    color: #0f0;
     margin-left: 1px;
 }
 
