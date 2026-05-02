@@ -241,7 +241,7 @@ const timeInput = document.querySelector('#time');
 function checkDateTime() {
   console.log('date:', dateInput.value, '| time:', timeInput.value);
   const correctDate = dateInput.value === '2083-09-30';
-  const correctTime = timeInput.value === '13:14';
+  const correctTime = timeInput.value === '01:14';
   if (correctDate && correctTime) solvePuzzle('dateSolved');
 }
 
