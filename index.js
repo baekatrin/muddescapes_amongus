@@ -130,7 +130,7 @@ function updateVideoState() {
       muteBtn.style.display   = 'block';
       if (!realVideosLoaded) {
         video.src   = REAL_VIDEOS[cam];
-        video.muted = false;
+        video.muted = true;
         video.load();
         video.play().catch(() => {});
       }
