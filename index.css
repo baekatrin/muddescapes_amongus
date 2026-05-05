@@ -1,6 +1,8 @@
 html {
-    height: auto;
-    overflow-y: auto;
+    height: 100%;
+    overflow-y: scroll;
+    scrollbar-gutter: stable both-edges;
+    font-family: 'Courier New', monospace;
 }
 
 body {
@@ -22,13 +24,13 @@ body {
 /* Wide CCTV (col 1) | narrow status + signal stack (col 2). */
 .main-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 360px);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
     grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
     gap: 6px;
     padding: 6px;
     width: 100%;
-    min-height: calc(100dvh - 52px);
+    min-height: calc(100vh - 52px);
     box-sizing: border-box;
 }
 
@@ -36,7 +38,7 @@ body {
     grid-column: 1;
     grid-row: 1;
     min-width: 0;
-    min-height: calc(100dvh - 64px);
+    min-height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -63,10 +65,25 @@ body {
     position: sticky;
     top: 60px;
     align-self: stretch;
-    max-height: calc(100dvh - 68px);
+    width: min(340px, 100%);
+    max-height: calc(100vh - 68px);
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+}
+
+@supports (height: 100dvh) {
+    .main-grid {
+        min-height: calc(100dvh - 52px);
+    }
+
+    .grid-item-cctv {
+        min-height: calc(100dvh - 64px);
+    }
+
+    .cctv-sidebar {
+        max-height: calc(100dvh - 68px);
+    }
 }
 
 /* Status fixed height; signal monitor grows to fill sidebar */
@@ -161,9 +178,20 @@ body {
 .grid-item-cctv .cctv-date-time input {
     font-size: 14px;
     padding: 10px 12px;
-    min-height: 42px;
+    height: 42px;
+    line-height: 20px;
+    box-sizing: border-box;
+    font-family: inherit;
     border-radius: 4px;
     border-color: #555;
+}
+
+.grid-item-cctv .cctv-date-time input[type="date"] {
+    inline-size: 185px;
+}
+
+.grid-item-cctv .cctv-date-time input[type="time"] {
+    inline-size: 145px;
 }
 
 .cctv-display {
