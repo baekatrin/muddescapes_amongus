@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Database – CCTV Footage</title>
-  <link rel="stylesheet" href="database.css">
+  <link rel="stylesheet" href="database.css?v=wrong-red-1">
   <link rel="stylesheet" href="nav.css">
 </head>
 <body class="has-fixed-nav">
@@ -20,6 +20,7 @@
 
   <main class="main">
     <div class="database-layout">
+      <p class="database-hint">Enter in the details of who you think the imposter is. Upon narrowing down to the correct database entry, you will be rewarded. (YOU NEED TO FILL ALL FOUR FIELDS)</p>
       <div class="filters">
         <div class="filter-field">
           <label for="filter-name">Name</label>
@@ -40,10 +41,13 @@
       </div>
       <h2 class="database-section-title">Records</h2>
       <p class="database-row-count" id="row-count" aria-live="polite"></p>
-      <div class="code-reveal" id="code-reveal" hidden>
-        <p class="code-label">Code</p>
-        <p class="code-value" id="code-value"></p>
-      </div>
+      <section class="code-reveal" id="code-reveal" aria-live="polite">
+        <h3 class="reveal-heading" id="reveal-heading" role="status"></h3>
+        <div class="reveal-code-section" id="reveal-code-section" hidden aria-hidden="true">
+          <p class="code-label">Clearance code</p>
+          <p class="code-value" id="code-value"></p>
+        </div>
+      </section>
       <div class="table-wrap">
         <table class="data-table" id="data-table">
           <thead>
@@ -63,6 +67,6 @@
   </main>
 
   <script src="data/records.js"></script>
-  <script src="database.js"></script>
+  <script src="database.js?v=wrong-red-1"></script>
 </body>
 </html>
