@@ -47,6 +47,18 @@ body {
   border-image-slice: 98;
 }
 
+.database-hint {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #cce8ff;
+  background: rgba(0, 48, 80, 0.35);
+  border: 1px solid rgba(120, 180, 220, 0.45);
+  border-radius: 4px;
+  max-width: 56rem;
+}
+
 .filters {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -94,20 +106,112 @@ body {
 }
 
 .code-reveal {
-  padding: 12px 14px;
-  background: rgba(0, 40, 0, 0.45);
-  border: 1px solid #0f0;
+  display: none;
+  padding: 16px 18px;
+  border-radius: 4px;
+  border-width: 2px;
+  border-style: solid;
+  margin-bottom: 4px;
+}
+
+.code-reveal.is-open {
+  display: block;
+}
+
+.code-reveal.code-reveal--success {
+  background: rgba(0, 48, 0, 0.55);
+  border-color: #0f0;
+}
+
+.code-reveal.code-reveal--failure {
+  background: rgba(40, 0, 6, 0.75);
+  border-color: #ff2a2a;
+  border-width: 2px;
+  box-shadow:
+    0 0 8px rgba(255, 40, 40, 0.9),
+    0 0 20px rgba(255, 0, 60, 0.55),
+    0 0 36px rgba(255, 0, 0, 0.35),
+    inset 0 0 22px rgba(80, 0, 20, 0.5);
+}
+
+.reveal-heading {
+  margin: 0 0 8px 0;
+  font-size: 1.35rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  font-family: monospace, ui-monospace, monospace;
+}
+
+.code-reveal.code-reveal--success .reveal-heading {
+  color: #8f8;
+}
+
+.code-reveal.code-reveal--failure .reveal-heading {
+  color: #ff4444;
+  text-shadow:
+    0 0 6px #ff0000,
+    0 0 14px rgba(255, 0, 80, 0.95),
+    0 0 28px rgba(255, 30, 30, 0.7),
+    0 0 42px rgba(255, 0, 0, 0.45);
+}
+
+/* ID-level + data-result so wrong-state always wins over any green/success cascade or cache quirks */
+#code-reveal.is-open[data-result="wrong"] {
+  background: rgba(42, 0, 10, 0.88);
+  border: 2px solid #ff2d2d !important;
+  box-shadow:
+    0 0 10px rgba(255, 45, 45, 0.95),
+    0 0 24px rgba(255, 0, 50, 0.6),
+    0 0 40px rgba(255, 0, 0, 0.4),
+    inset 0 0 24px rgba(90, 0, 20, 0.45);
+}
+
+#code-reveal[data-result="wrong"] .reveal-heading {
+  color: #ff3a3a !important;
+  text-shadow:
+    0 0 5px #ff0000,
+    0 0 12px rgba(255, 0, 60, 1),
+    0 0 26px rgba(255, 40, 40, 0.85),
+    0 0 40px rgba(255, 0, 0, 0.5) !important;
+}
+
+.reveal-code-section {
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(0, 255, 128, 0.35);
+}
+
+.reveal-code-section[hidden],
+.code-reveal.code-reveal--failure .reveal-code-section,
+.reveal-code-section.is-withheld {
+  display: none !important;
+  visibility: hidden;
+  overflow: hidden;
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  border-width: 0 !important;
+}
+
+.code-reveal.code-reveal--success .reveal-code-section:not([hidden]):not(.is-withheld) {
+  display: block !important;
+  visibility: visible !important;
+  max-height: none !important;
+  padding-top: 10px !important;
+  margin-top: 4px !important;
+  border-top-width: 1px !important;
 }
 
 .code-label {
   margin: 0 0 6px 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #8f8;
 }
 
 .code-value {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.65rem;
   font-weight: bold;
   color: #0f0;
   letter-spacing: 0.2em;
@@ -148,6 +252,11 @@ body {
 .data-table .code-cell {
   font-family: monospace, ui-monospace, monospace;
   color: #0f0;
+}
+
+.data-table .code-cell.code-cell--masked {
+  color: #555;
+  letter-spacing: normal;
 }
 
 @media (max-width: 768px) {

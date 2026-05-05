@@ -19,43 +19,81 @@ body {
 }
 
 /* ===== MAIN GRID LAYOUT ===== */
-/* Row 1: CCTV full width (tall)
-   Row 2: Knobs | Status | Signal (3 equal columns) */
+/* Wide CCTV (col 1) | narrow status + signal stack (col 2). */
 .main-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 360px);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
     gap: 6px;
-    padding: 8px;
+    padding: 6px;
     width: 100%;
+    min-height: calc(100dvh - 52px);
     box-sizing: border-box;
 }
 
-/* CCTV spans all 3 columns */
 .grid-item-cctv {
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    min-height: calc(100dvh - 64px);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     border: 1px solid #333;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    padding: 8px;
+    padding: 6px;
     box-sizing: border-box;
-    /* NO height or min-height — let content define size */
 }
 
-/* Bottom 3 grid items */
+.grid-item-cctv > .item-header,
+.grid-item-cctv > .cctv-date-time {
+    flex-shrink: 0;
+}
+
+.cctv-sidebar {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    top: 60px;
+    align-self: stretch;
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* Status fixed height; signal monitor grows to fill sidebar */
+.cctv-sidebar > .grid-item:first-child {
+    flex: 0 0 auto;
+}
+
+.cctv-sidebar > .grid-item:last-child {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Status / signal panels inside sidebar */
 .grid-item {
     display: flex;
     flex-direction: column;
     border: 1px solid #333;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    padding: 8px;
+    padding: 6px;
     overflow: hidden;
     min-height: 0;
     box-sizing: border-box;
+}
+
+.cctv-sidebar > .grid-item {
+    padding: 10px 12px;
 }
 
 .item-header {
@@ -72,6 +110,18 @@ body {
     white-space: nowrap;
 }
 
+.cctv-sidebar .item-header {
+    font-size: 12px;
+    padding-bottom: 4px;
+}
+
+/* CCTV page only — larger “CCTV FEED” + date/time controls */
+.grid-item-cctv > .item-header {
+    font-size: 15px;
+    padding-bottom: 8px;
+    letter-spacing: 0.08em;
+}
+
 .cctv-date-time {
     display: flex;
     gap: 3px;
@@ -83,9 +133,21 @@ body {
     flex-shrink: 0;
 }
 
+.grid-item-cctv .cctv-date-time {
+    font-size: 14px;
+    gap: 8px;
+    padding: 8px 4px;
+    margin-bottom: 8px;
+}
+
 .cctv-date-time label {
     color: #999;
     font-weight: bold;
+}
+
+.grid-item-cctv .cctv-date-time label {
+    font-size: 14px;
+    color: #ccc;
 }
 
 .cctv-date-time input {
@@ -96,12 +158,22 @@ body {
     color: white;
 }
 
+.grid-item-cctv .cctv-date-time input {
+    font-size: 14px;
+    padding: 10px 12px;
+    min-height: 42px;
+    border-radius: 4px;
+    border-color: #555;
+}
+
 .cctv-display {
+    flex: 1 1 auto;
+    min-height: 0;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: clamp(4px, 0.6vw, 10px);
     width: 100%;
-    max-width: 600px;
 }
 
 .cctv-display video {
@@ -116,7 +188,9 @@ body {
 .cctv-cam {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;  /* each cam is always proper video ratio */
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
     background: black;
     overflow: hidden;
 }
@@ -307,10 +381,10 @@ input-knob::part(rotator) {
 /* ===== PROGRESS TERMINAL ===== */
 .progress-terminal {
     max-width: 100%;
-    padding: 6px;
+    padding: 10px 12px;
     background: #000;
     border: 1px solid #0f0;
-    border-radius: 3px;
+    border-radius: 4px;
     font-family: 'Courier New', monospace;
     color: #0f0;
     text-shadow: 0 0 10px #0f0;
@@ -320,6 +394,11 @@ input-knob::part(rotator) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.cctv-sidebar .progress-terminal {
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 .term-header {
@@ -333,8 +412,18 @@ input-knob::part(rotator) {
     font-size: 7px;
 }
 
+.cctv-sidebar .term-header {
+    font-size: 12px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+}
+
 .term-lines {
     margin-bottom: 4px;
+}
+
+.cctv-sidebar .term-lines {
+    margin-bottom: 8px;
 }
 
 .term-line {
@@ -344,6 +433,12 @@ input-knob::part(rotator) {
     gap: 3px;
     font-size: 7px;
     white-space: nowrap;
+}
+
+.cctv-sidebar .term-line {
+    font-size: 13px;
+    margin-bottom: 6px;
+    gap: 6px;
 }
 
 .term-bracket {
@@ -364,6 +459,11 @@ input-knob::part(rotator) {
     text-align: center;
     color: #666;
     font-weight: bold;
+}
+
+.cctv-sidebar .term-empty,
+.cctv-sidebar .term-checked {
+    width: 1.1em;
 }
 
 .term-checked {
@@ -389,9 +489,20 @@ input-knob::part(rotator) {
     overflow-y: auto;
 }
 
+.cctv-sidebar .term-messages {
+    font-size: 12px;
+    line-height: 1.4;
+    padding-top: 8px;
+    max-height: 140px;
+}
+
 .term-msg {
     margin-bottom: 1px;
     animation: term-appear 0.3s ease-in;
+}
+
+.cctv-sidebar .term-msg {
+    margin-bottom: 4px;
 }
 
 @keyframes term-appear {
@@ -403,7 +514,7 @@ input-knob::part(rotator) {
 #signal-monitor {
     background: #080b14;
     border-radius: 6px;
-    padding: 6px;
+    padding: 12px 14px;
     font-family: 'Share Tech Mono', monospace;
     color: #0f0;
     width: 100%;
@@ -411,10 +522,16 @@ input-knob::part(rotator) {
     position: relative;
     overflow: hidden;
     margin: 0;
-    font-size: 8px;
+    font-size: 13px;
+    line-height: 1.4;
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-height: 0;
+}
+
+.cctv-sidebar > .grid-item:last-child #signal-monitor {
+    min-height: 200px;
 }
 
 #signal-monitor .sm-stars {
@@ -431,37 +548,37 @@ input-knob::part(rotator) {
 
 #signal-monitor .sm-title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 8px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.1em;
     color: #0f0;
     text-transform: uppercase;
-    margin: 0 0 2px;
+    margin: 0 0 4px;
 }
 
 #signal-monitor .sm-subtitle {
-    font-size: 6px;
+    font-size: 11px;
     color: #1f722a;
     letter-spacing: 0.05em;
-    margin: 0 0 4px;
+    margin: 0 0 8px;
 }
 
 #signal-monitor .sm-status {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 3px 5px;
+    gap: 8px;
+    padding: 8px 10px;
     border: 0.5px solid #000000;
-    border-radius: 3px;
+    border-radius: 4px;
     background: #0b1220;
-    margin-bottom: 6px;
-    font-size: 6px;
+    margin-bottom: 12px;
+    font-size: 12px;
     letter-spacing: 0.05em;
 }
 
 #signal-monitor .sm-dot {
-    width: 4px;
-    height: 4px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #101010;
     flex-shrink: 0;
@@ -486,61 +603,77 @@ input-knob::part(rotator) {
     50%      { background: #1a2d4a; }
 }
 
+/* Coherence stacked above censorship */
 #signal-monitor .sm-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 10px;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 #signal-monitor .sm-panel {
     border: 0.5px solid #1a2d4a;
-    border-radius: 3px;
-    padding: 4px;
+    border-radius: 4px;
+    padding: 10px 12px;
     background: #0b1220;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 #signal-monitor .sm-panel-label {
     font-family: 'Orbitron', sans-serif;
-    font-size: 7px;
+    font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.08em;
-    margin: 0 0 1px;
+    margin: 0 0 4px;
+}
+
+#signal-monitor .sm-panel-hint {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 600;
+    color: #c5e8f0;
+    margin: 0 0 8px;
+    letter-spacing: 0.02em;
 }
 
 #signal-monitor .sm-bar-track {
     display: flex;
-    gap: 1px;
-    margin-bottom: 3px;
+    gap: 2px;
+    margin-bottom: 6px;
 }
 
 #signal-monitor .sm-seg {
     flex: 1;
-    height: 8px;
-    border-radius: 1px;
+    height: 14px;
+    border-radius: 2px;
     transition: background 0.08s;
 }
 
 #signal-monitor .sm-pct {
     font-family: 'Orbitron', sans-serif;
-    font-size: 10px;
+    font-size: 18px;
     font-weight: 500;
     letter-spacing: 0.04em;
 }
 
 #signal-monitor .sm-pct-unit {
-    font-size: 6px;
+    font-size: 12px;
     color: #0f0;
-    margin-left: 1px;
+    margin-left: 2px;
 }
 
 #signal-monitor .sm-solved {
     border: 0.5px solid #1d5c3a;
     background: #071410;
-    border-radius: 3px;
-    padding: 4px;
+    border-radius: 4px;
+    padding: 10px 8px;
     text-align: center;
     display: none;
+    flex-shrink: 0;
 }
 
 #signal-monitor .sm-solved.show {
@@ -549,15 +682,15 @@ input-knob::part(rotator) {
 
 #signal-monitor .sm-solved-title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 7px;
+    font-size: 13px;
     font-weight: 500;
     color: #1d9e75;
     letter-spacing: 0.1em;
-    margin: 0 0 1px;
+    margin: 0 0 4px;
 }
 
 #signal-monitor .sm-solved-sub {
-    font-size: 6px;
+    font-size: 12px;
     color: #0f6e56;
     letter-spacing: 0.05em;
     margin: 0;

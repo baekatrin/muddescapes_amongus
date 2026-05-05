@@ -7,6 +7,7 @@
   <title>CCTV Footage and Database</title>
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="nav.css" />
+  <!-- MQTT: browser uses WSS; ESP uses libmuddescapes (mqtt://). Same broker. -->
   <script type="module" src="https://unpkg.com/input-knob"></script>
   <!-- MQTT: browser uses WSS; ESP uses libmuddescapes (mqtt://). Same broker. -->
   <!-- Puzzle name + variable label must match template-main/src/main.cpp and mqtt-bridge.js -->
@@ -30,9 +31,9 @@
 
   <div class="main-grid">
 
-    <!-- ROW 1: CCTV FEED (spans all 3 columns) -->
+    <!-- Left: CCTV FEED -->
     <div class="grid-item-cctv">
-      <div class="item-header">CCTV FEED</div>
+      <div class="item-header">CCTV FEED - FIND THE IMPOSTER</div>
       <div class="cctv-date-time">
         <label for="date">Date:</label>
         <input type="date" id="date" name="footage-date" value="2050-01-01" min="2000-01-01" max="3000-01-01">
@@ -95,92 +96,50 @@
       </div>
     </div>
 
-    <!-- ROW 2 COL 1: KNOB CONTROLS -->
-    <div class="grid-item">
-      <div class="item-header">FREQUENCY CONFIG</div>
-      <div class="knob-container">
-        <div class="knob" id="knob1">
-          <input-knob value="0" scale="100" min="0" max="100">
-            <div class="knob-inner"></div>
-          </input-knob>
-          <div class="knob-side">
-            <p class="show-value">0</p>
-            <div class="led"><img id="led1" src="./data/led-off.png"></div>
+    <aside class="cctv-sidebar" aria-label="Status and signal monitor">
+      <div class="grid-item">
+        <div class="item-header">STATUS</div>
+        <div class="progress-terminal">
+          <div class="term-header">PUZZLE_STATUS v1.0</div>
+          <div class="term-lines">
+            <div class="term-line"><span class="term-bracket">[</span><span id="date-status" class="term-empty">✗</span><span class="term-bracket">]</span> <span class="term-label">Date/Time</span></div>
+            <div class="term-line"><span class="term-bracket">[</span><span id="arduino-status" class="term-empty">✗</span><span class="term-bracket">]</span> <span class="term-label">Signal Monitor</span></div>
           </div>
-        </div>
-        <div class="knob" id="knob2">
-          <input-knob value="0" scale="100" min="0" max="100">
-            <div class="knob-inner"></div>
-          </input-knob>
-          <div class="knob-side">
-            <p class="show-value">0</p>
-            <div class="led"><img id="led2" src="./data/led-off.png"></div>
-          </div>
-        </div>
-        <div class="knob" id="knob3">
-          <input-knob value="0" scale="100" min="0" max="100">
-            <div class="knob-inner"></div>
-          </input-knob>
-          <div class="knob-side">
-            <p class="show-value">0</p>
-            <div class="led"><img id="led3" src="./data/led-off.png"></div>
-          </div>
-        </div>
-        <div class="knob" id="knob4">
-          <input-knob value="0" scale="100" min="0" max="100">
-            <div class="knob-inner"></div>
-          </input-knob>
-          <div class="knob-side">
-            <p class="show-value">0</p>
-            <div class="led"><img id="led4" src="./data/led-off.png"></div>
-          </div>
+          <div class="term-messages" id="term-messages"></div>
         </div>
       </div>
-    </div>
 
-    <!-- ROW 2 COL 2: STATUS TERMINAL -->
-    <div class="grid-item">
-      <div class="item-header">STATUS</div>
-      <div class="progress-terminal">
-        <div class="term-header">PUZZLE_STATUS v1.0</div>
-        <div class="term-lines">
-          <div class="term-line"><span class="term-bracket">[</span><span id="knob-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Knob Config</span></div>
-          <div class="term-line"><span class="term-bracket">[</span><span id="date-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Date/Time</span></div>
-          <div class="term-line"><span class="term-bracket">[</span><span id="arduino-status" class="term-empty">○</span><span class="term-bracket">]</span> <span class="term-label">Arduino</span></div>
-        </div>
-        <div class="term-messages" id="term-messages"></div>
-      </div>
-    </div>
-
-    <!-- ROW 2 COL 3: SIGNAL MONITOR -->
-    <div class="grid-item">
-      <div class="item-header">SIGNAL MONITOR</div>
-      <div id="signal-monitor">
-        <div class="sm-stars" id="sm-stars"></div>
-        <p class="sm-title">transmission monitor</p>
-        <p class="sm-subtitle">deep space relay</p>
-        <div class="sm-status">
-          <span class="sm-dot connecting" id="sm-dot"></span>
-          <span id="sm-conn-label" style="color:#ba7517;">connecting...</span>
-        </div>
-        <div class="sm-grid">
-          <div class="sm-panel">
-            <p class="sm-panel-label" style="color:#0f0;">coherence</p>
-            <div class="sm-bar-track" id="sm-bar1-track"></div>
-            <div><span class="sm-pct" id="sm-bar1-pct" style="color:#378add;">0</span><span class="sm-pct-unit">%</span></div>
+      <div class="grid-item">
+        <div class="item-header">SIGNAL MONITOR</div>
+        <div id="signal-monitor">
+          <div class="sm-stars" id="sm-stars"></div>
+          <p class="sm-title">transmission monitor</p>
+          <p class="sm-subtitle">deep space relay</p>
+          <div class="sm-status">
+            <span class="sm-dot connecting" id="sm-dot"></span>
+            <span id="sm-conn-label" style="color:#ba7517;">connecting...</span>
           </div>
-          <div class="sm-panel">
-            <p class="sm-panel-label" style="color:#0f0;">censorship</p>
-            <div class="sm-bar-track" id="sm-bar2-track"></div>
-            <div><span class="sm-pct" id="sm-bar2-pct" style="color:#d4537e;">0</span><span class="sm-pct-unit">%</span></div>
+          <div class="sm-grid">
+            <div class="sm-panel">
+              <p class="sm-panel-label" style="color:#0f0;">coherence</p>
+              <p class="sm-panel-hint">Get this to 100%.</p>
+              <div class="sm-bar-track" id="sm-bar1-track"></div>
+              <div><span class="sm-pct" id="sm-bar1-pct" style="color:#378add;">0</span><span class="sm-pct-unit">%</span></div>
+            </div>
+            <div class="sm-panel">
+              <p class="sm-panel-label" style="color:#0f0;">censorship</p>
+              <p class="sm-panel-hint">Lower this to 0%.</p>
+              <div class="sm-bar-track" id="sm-bar2-track"></div>
+              <div><span class="sm-pct" id="sm-bar2-pct" style="color:#d4537e;">0</span><span class="sm-pct-unit">%</span></div>
+            </div>
+          </div>
+          <div class="sm-solved" id="sm-solved">
+            <p class="sm-solved-title">SOLVED</p>
+            <p class="sm-solved-sub">transmission unlocked</p>
           </div>
         </div>
-        <div class="sm-solved" id="sm-solved">
-          <p class="sm-solved-title">SOLVED</p>
-          <p class="sm-solved-sub">transmission unlocked</p>
-        </div>
       </div>
-    </div>
+    </aside>
 
   </div> <!-- end .main-grid -->
 

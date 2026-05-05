@@ -61,6 +61,36 @@
 
   let bar1Val = 0;
   let bar2Val = 0;
+  /** Explicit victor/solved topic is true once we see "true"; cleared on explicit false payloads. */
+  let topicClaimsSolved = false;
+
+  function parseMqttBool(val) {
+    const v = String(val).trim().toLowerCase();
+    if (['true', '1', 'yes', 'on'].includes(v)) return true;
+    if (['false', '0', 'no', 'off'].includes(v)) return false;
+    return null;
+  }
+
+  function derivedSolvedFromBars() {
+    return bar1Val >= CONFIG.solvedBar1Min && bar2Val <= CONFIG.solvedBar2Max;
+  }
+
+  function computeEffectiveArduinoSolved() {
+    return topicClaimsSolved || derivedSolvedFromBars();
+  }
+
+  /** Single place: Signal Monitor overlay + global flag puzzle code reads (polling + optional event). */
+  let lastNotifiedArduinoSolved = undefined;
+  function syncArduinoSolveStateUi() {
+    const effective = computeEffectiveArduinoSolved();
+    const el        = document.getElementById('sm-solved');
+    if (el) el.className = 'sm-solved' + (effective ? ' show' : '');
+    window.MQTT_SOLVED = effective;
+    if (effective !== lastNotifiedArduinoSolved) {
+      lastNotifiedArduinoSolved = effective;
+      window.dispatchEvent(new CustomEvent('muddescapes-mqtt-solved-change', { detail: { solved: effective } }));
+    }
+  }
 
   function render(b1, b2) {
     bar1Val = Math.round(b1);
@@ -69,13 +99,7 @@
     document.getElementById('sm-bar2-pct').textContent = bar2Val;
     renderBar('sm-bar1-track', bar1Val, CONFIG.bar1LitColor, CONFIG.bar1DimColor);
     renderBar('sm-bar2-track', bar2Val, CONFIG.bar2LitColor, CONFIG.bar2DimColor);
-  }
-
-  function setSolved(solved) {
-    const el = document.getElementById('sm-solved');
-    if (el) {
-      el.className = 'sm-solved' + (solved ? ' show' : '');
-    }
+    syncArduinoSolveStateUi();
   }
 
   function setStatus(state) {
@@ -124,9 +148,11 @@
     } else if (topic === CONFIG.topicBar2) {
       render(bar1Val, parseInt(val, 10));
     } else if (topic === CONFIG.topicSolved) {
-      const isSolved = val === 'true';
-      setSolved(isSolved);
-      window.MQTT_SOLVED = isSolved; // Expose to puzzle progression system
+      const parsed = parseMqttBool(val);
+      if (parsed !== null) {
+        topicClaimsSolved = parsed;
+      }
+      syncArduinoSolveStateUi();
     }
   });
 
@@ -145,7 +171,7 @@
     setStatus('error');
   });
 
-  // Initial state
+  // Initial state (also runs syncArduinoSolveStateUi → MQTT_SOLVED + overlay)
   render(0, 0);
   setStatus('connecting');
 

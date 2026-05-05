@@ -10,11 +10,11 @@ const UNMUTE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 </svg>`;
 
 /* ============================================================
-   STAGE LOGIC (based on number of puzzles solved):
-   Stage 0 — 0 solved: glitch GIFs on all cams, no audio buttons
-   Stage 1 — 1 solved: static-room images replace glitch, captions shown, no audio buttons yet
-   Stage 2 — 2 solved: audio/mute buttons appear on cams (videos still show static rooms)
-   Stage 3 — 3 solved: real room videos replace static images, full audio
+   CCTV stage (two puzzles: date/time + Arduino; knob puzzle removed).
+   Stage 1 is skipped visually: first solve jumps straight to “old stage 2” behavior.
+   Stage 0 — 0 solved: glitch, no mute
+   Stage 2 — 1 solved: static rooms, captions, mute buttons (skips mute-off interim)
+   Stage 3 — 2 solved: real room MP4s, captions, mute buttons
    ============================================================ */
 
 const REAL_VIDEOS = {
@@ -24,10 +24,18 @@ const REAL_VIDEOS = {
   4: './data/real-rooms/plaza-real.mp4'
 };
 
-const puzzleState = { knobsSolved: false, dateSolved: false, arduinoSolved: false };
+const puzzleState = { dateSolved: false, arduinoSolved: false };
 
-function getStage() {
+function getSolvedCount() {
   return Object.values(puzzleState).filter(Boolean).length;
+}
+
+/** Drives glitch / static / video / mute UI; maps 1 solve → former stage 2. */
+function getVideoStage() {
+  const n = getSolvedCount();
+  if (n === 0) return 0;
+  if (n === 1) return 2;
+  return 3;
 }
 
 // === localStorage helpers ===
@@ -41,7 +49,8 @@ function loadState() {
     const saved = localStorage.getItem('muddescapes_puzzleState');
     if (saved) {
       const parsed = JSON.parse(saved);
-      Object.assign(puzzleState, parsed);
+      if (typeof parsed.dateSolved === 'boolean') puzzleState.dateSolved = parsed.dateSolved;
+      if (typeof parsed.arduinoSolved === 'boolean') puzzleState.arduinoSolved = parsed.arduinoSolved;
     }
   } catch (e) {
     console.warn('Could not load saved puzzle state:', e);
@@ -50,14 +59,12 @@ function loadState() {
 
 function resetPuzzle() {
   localStorage.removeItem('muddescapes_puzzleState');
-  puzzleState.knobsSolved   = false;
   puzzleState.dateSolved    = false;
   puzzleState.arduinoSolved = false;
   realVideosLoaded = false;
 
   if (dateInput) { dateInput.disabled = false; dateInput.value = '2050-01-01'; }
   if (timeInput) { timeInput.disabled = false; timeInput.value = ''; }
-  document.querySelectorAll('input-knob').forEach(k => k.style.pointerEvents = 'auto');
 
   updateTerminal();
   updateVideoState();
@@ -95,7 +102,7 @@ function addTerminalMessage(msg) {
 let realVideosLoaded = false;
 
 function updateVideoState() {
-  const stage = getStage();
+  const stage = getVideoStage();
 
   for (let cam = 1; cam <= 4; cam++) {
     const glitch    = document.querySelector(`.cctv-glitch-overlay[data-cam="${cam}"]`);
@@ -111,12 +118,6 @@ function updateVideoState() {
       caption.style.display   = 'none';
       muteBtn.style.display   = 'none';
       video.muted = true;
-    } else if (stage === 1) {
-      glitch.style.display    = 'none';
-      staticImg.style.display = 'block';
-      caption.style.display   = 'block';
-      muteBtn.style.display   = 'none';
-      video.muted = true;
     } else if (stage === 2) {
       glitch.style.display    = 'none';
       staticImg.style.display = 'block';
@@ -126,7 +127,7 @@ function updateVideoState() {
     } else if (stage === 3) {
       glitch.style.display    = 'none';
       staticImg.style.display = 'none';
-      caption.style.display   = 'none';
+      caption.style.display   = 'block';
       muteBtn.style.display   = 'block';
       if (!realVideosLoaded) {
         video.src   = REAL_VIDEOS[cam];
@@ -146,7 +147,7 @@ function solvePuzzle(component) {
   if (puzzleState[component]) return;
   puzzleState[component] = true;
   saveState();
-  const stage = getStage();
+  const solvedCount = getSolvedCount();
 
   if (component === 'dateSolved') {
     if (dateInput) dateInput.disabled = true;
@@ -157,19 +158,17 @@ function solvePuzzle(component) {
   updateVideoState();
 
   const labels = {
-    knobsSolved:   'Knob Configuration',
     dateSolved:    'Date/Time Verification',
     arduinoSolved: 'Physical Puzzle'
   };
   addTerminalMessage(`>> [✓] ${labels[component]} verified`);
 
-  if (stage === 1) {
+  if (solvedCount === 1) {
     addTerminalMessage('>> STATIC ROOM FEEDS LOADED');
     addTerminalMessage('>> Triangulating camera positions...');
-  } else if (stage === 2) {
     addTerminalMessage('>> AUDIO CAPABILITIES RESTORED');
     addTerminalMessage('>> Warning: interference detected on all channels');
-  } else if (stage === 3) {
+  } else if (solvedCount === 2) {
     addTerminalMessage('>> ALL SYSTEMS ONLINE');
     addTerminalMessage('>> FULL ACCESS GRANTED — streaming live feeds');
   }
@@ -179,7 +178,7 @@ function solvePuzzle(component) {
 
 function toggleMute(btn) {
   const cam = btn.getAttribute('data-cam');
-  if (getStage() < 2) return;
+  if (getVideoStage() < 2) return;
   const video    = document.querySelector(`#vid${cam}`);
   const wasMuted = video.muted;
 
@@ -192,44 +191,6 @@ function toggleMute(btn) {
     video.play().catch(() => {});
   }
 }
-
-// ============================================================
-// KNOBS
-// ============================================================
-
-const knobTargets = [
-  { id: 'knob1', min: 30, max: 33, led: '#led1' },
-  { id: 'knob2', min: 45, max: 48, led: '#led2' },
-  { id: 'knob3', min: 78, max: 81, led: '#led3' },
-  { id: 'knob4', min: 49, max: 52, led: '#led4' }
-];
-
-function checkAllKnobs() {
-  const allCorrect = knobTargets.every(({ id, min, max }) => {
-    const el = document.querySelector(`#${id} input-knob`);
-    if (!el) return false;
-    const v = parseFloat(el.value);
-    return v > min && v < max;
-  });
-  if (allCorrect) {
-    solvePuzzle('knobsSolved');
-    document.querySelectorAll('input-knob').forEach(k => k.style.pointerEvents = 'none');
-  }
-}
-
-knobTargets.forEach(({ id, min, max, led }) => {
-  const knobEl    = document.querySelector(`#${id} input-knob`);
-  const ledEl     = document.querySelector(led);
-  const displayEl = document.querySelector(`#${id} .show-value`);
-  if (!knobEl) return;
-
-  knobEl.addEventListener('knob-move-change', (e) => {
-    const val = parseFloat(e.target.value);
-    if (displayEl) displayEl.textContent = Math.round(val);
-    if (ledEl) ledEl.src = (val > min && val < max) ? './data/led-on.png' : './data/led-off.png';
-    checkAllKnobs();
-  });
-});
 
 // ============================================================
 // DATE / TIME
@@ -249,12 +210,18 @@ if (dateInput) dateInput.addEventListener('change', checkDateTime);
 if (timeInput) timeInput.addEventListener('change', checkDateTime);
 
 // ============================================================
-// ARDUINO (MQTT polling)
+// ARDUINO (MQTT: mqtt-bridge.js sets window.MQTT_SOLVED from victor/solved + bar thresholds)
 // ============================================================
 
-setInterval(() => {
+function tryArduinoMqttSolve() {
   if (window.MQTT_SOLVED === true) solvePuzzle('arduinoSolved');
-}, 500);
+}
+
+window.addEventListener('muddescapes-mqtt-solved-change', (e) => {
+  if (e.detail && e.detail.solved === true) tryArduinoMqttSolve();
+});
+
+setInterval(tryArduinoMqttSolve, 500);
 
 // ============================================================
 // INIT — restore saved state, then update UI
@@ -272,3 +239,6 @@ if (puzzleState.dateSolved) {
 
 updateVideoState();
 updateTerminal();
+
+// If MQTT already marked solved before this script finished (unlikely), honor it immediately.
+tryArduinoMqttSolve();
